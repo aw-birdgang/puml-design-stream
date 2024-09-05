@@ -1,0 +1,17 @@
+@startuml
+skinparam componentStyle rectangle
+
+package "IAM" {
+    component "User" as user
+    component "EC2 Instance" as ec2
+    component "S3 Bucket" as s3
+    component "IAM Role" as role
+    component "IAM Policy" as policy
+}
+
+user -down-> role : Assume Role
+role -down-> policy : Attach Policy
+ec2 -down-> role : Assume Role
+policy -down-> s3 : Define Access Permissions
+
+@enduml

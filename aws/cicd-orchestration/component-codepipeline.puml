@@ -1,0 +1,38 @@
+@startuml
+skinparam backgroundColor #EEEBDC
+
+skinparam sequence {
+    ArrowColor DarkGreen
+    LifeLineBorderColor blue
+    LifeLineBackgroundColor #A9DCDF
+}
+
+actor Developer as Dev
+
+rectangle "GitHub" {
+    Dev --> (Push Code)
+    (Push Code) --> (GitHub Repo)
+}
+
+rectangle "AWS CodePipeline" {
+    (GitHub Repo) --> (Source Stage) : Trigger Pipeline
+    (Source Stage) --> (CodeBuild Stage) : Send to Build
+    (CodeBuild Stage) --> (CodeDeploy Stage) : Send to Deploy
+}
+
+rectangle "AWS CodeBuild" {
+    (CodeBuild Stage) --> (Build Process) : Build Code
+    (Build Process) --> (Test Process) : Run Tests
+    (Test Process) --> (Artifacts) : Generate Artifacts
+}
+
+rectangle "AWS CodeDeploy" {
+    (CodeDeploy Stage) --> (ECS Cluster) : Deploy Artifacts
+}
+
+cloud "AWS ECS Cluster" {
+    (ECS Cluster) --> (Service) : Update Service
+    (Service) --> (Running Tasks) : Restart Tasks
+}
+
+@enduml

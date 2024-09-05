@@ -1,0 +1,22 @@
+@startuml
+skinparam componentStyle rectangle
+
+package "AWS Organization" {
+    package "Organizational Units (OUs)" {
+        component "Production" as prod
+        component "Development" as dev
+        component "Testing" as test
+    }
+    component "Service Control Policies (SCPs)" as scps
+    component "AWS Accounts" as accounts
+}
+
+prod -down-> accounts : Contain Accounts
+dev -down-> accounts : Contain Accounts
+test -down-> accounts : Contain Accounts
+
+scps -right-> prod : Apply Policies
+scps -right-> dev : Apply Policies
+scps -right-> test : Apply Policies
+
+@enduml

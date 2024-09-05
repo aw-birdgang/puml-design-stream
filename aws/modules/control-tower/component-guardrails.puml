@@ -1,0 +1,17 @@
+@startuml
+skinparam componentStyle rectangle
+
+package "AWS Control Tower" {
+    component "Guardrails" {
+        component "Preventive Guardrails" as preventive
+        component "Detective Guardrails" as detective
+    }
+    component "AWS Account" as account
+    component "Organizational Units" as ou
+}
+
+preventive -down-> account : Preventive Policies
+detective -down-> account : Detective Policies
+account -up-> ou : Applied to OUs
+
+@enduml

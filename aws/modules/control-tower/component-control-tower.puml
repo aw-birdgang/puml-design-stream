@@ -1,0 +1,21 @@
+@startuml
+skinparam componentStyle rectangle
+
+package "AWS Control Tower" {
+    component "Landing Zone" {
+        component "AWS Organization" as org
+        component "Organizational Units" as ou
+        component "Guardrails" as guardrails
+        component "Account Factory" as accFactory
+        component "AWS SSO" as sso
+        component "Logging & Monitoring" as logMonitor
+    }
+}
+
+org -down-> ou : Create OUs
+ou -down-> guardrails : Apply Guardrails
+org -right-> accFactory : Provision Accounts
+accFactory -down-> sso : Configure SSO
+guardrails -down-> logMonitor : Enable Logging & Monitoring
+
+@enduml

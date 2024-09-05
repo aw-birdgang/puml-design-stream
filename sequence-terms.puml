@@ -1,0 +1,10 @@
+@startuml
+actor Developer as Dev
+participant "CodePipeline" as Pipeline
+entity "Database" as DB
+boundary "API Gateway" as Gateway
+control "Controller" as Ctrl
+database "User DB" as UserDB
+collections "Queue" as MsgQueue
+
+@enduml

@@ -1,0 +1,36 @@
+@startuml
+skinparam backgroundColor #EEEBDC
+
+skinparam sequence {
+    ArrowColor DarkGreen
+    LifeLineBorderColor blue
+    LifeLineBackgroundColor #A9DCDF
+}
+
+actor User
+
+participant "Mempool" as Mempool
+participant "Miner A" as A
+participant "Miner B" as B
+participant "Ethereum Network" as Net
+
+User -> Mempool: Submit Transaction
+Mempool -> A: Provide Pending Transactions
+Mempool -> B: Provide Pending Transactions
+
+A -> A: Create Block Header
+B -> B: Create Block Header
+
+alt Miner A finds valid hash
+    A -> A: Calculate Hash (Successful)
+    A -> Net: Submit Proof of Work
+    Net -> Net: Validate Proof of Work
+    Net -> Net: Append Block to Blockchain
+    Net -> A: Reward Miner A
+else Miner B continues mining
+    B -> B: Calculate Hash (Continue)
+    B -> A: Receives Block from Miner A
+    B -> Net: Validate Block from Miner A
+end
+
+@enduml

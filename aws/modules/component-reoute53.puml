@@ -1,0 +1,20 @@
+@startuml
+skinparam backgroundColor #EEEBDC
+skinparam componentStyle rectangle
+
+folder "AWS Route 53" {
+    folder "Hosted Zone: example.com" {
+        [A Record: example.com -> 192.0.2.1]
+        [AAAA Record: example.com -> 2001:0db8:85a3:0000:0000:8a2e:0370:7334]
+        [CNAME Record: www.example.com -> example.com]
+        [MX Record: example.com -> mail.example.com]
+    }
+
+    folder "Traffic Policy" {
+        [Simple Routing: example.com -> 192.0.2.1]
+        [Geolocation Routing: example.com -> Regional Servers]
+        [Failover Routing: example.com -> Primary/Secondary]
+    }
+}
+
+@enduml

@@ -1,0 +1,17 @@
+@startuml
+skinparam componentStyle rectangle
+
+package "AWS Control Tower" {
+    component "Account Factory" {
+        component "Account Template" as template
+        component "Account Creation Request" as request
+        component "New AWS Account" as newAccount
+        component "Guardrails" as guardrails
+    }
+}
+
+template -down-> request : Define Template
+request -down-> newAccount : Create Account
+newAccount -right-> guardrails : Apply Guardrails
+
+@enduml

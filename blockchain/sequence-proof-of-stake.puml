@@ -1,0 +1,51 @@
+@startuml
+skinparam backgroundColor #EEEBDC
+
+skinparam sequence {
+    ArrowColor DarkGreen
+    LifeLineBorderColor blue
+    LifeLineBackgroundColor #A9DCDF
+}
+
+actor User
+
+participant "Validator A" as A
+participant "Validator B" as B
+participant "Validator C" as C
+participant "Validator D" as D
+participant "Ethereum Network" as Net
+
+User -> Net: Transaction Request
+Net -> A: Choose Validators (A, B, C, D)
+Net -> Net: Calculate Stake Weights
+Net -> Net: Randomly Select Block Proposer (B)
+Net -> B: Notify Block Proposer
+
+B -> Net: Propose Block
+
+alt Block Valid
+    A -> Net: Validate Block (Approve)
+    C -> Net: Validate Block (Approve)
+    D -> Net: Validate Block (Approve)
+    Net -> Net: Aggregate Signatures
+    Net -> A: Reward Validator A
+    Net -> B: Reward Validator B
+    Net -> C: Reward Validator C
+    Net -> D: Reward Validator D
+else Block Invalid
+    A -> Net: Validate Block (Reject)
+    C -> Net: Validate Block (Reject)
+    D -> Net: Validate Block (Approve)
+    Net -> Net: Aggregate Signatures
+    Net -> B: Slashing Penalty for Validator B (Stake Reduction)
+    Net -> A: Reward Validator A
+    Net -> C: Reward Validator C
+    Net -> D: Minor Penalty for Validator D (Inactivity Leak)
+end
+
+alt Validator Inactivity
+    Net -> D: Check Inactivity
+    Net -> D: Inactivity Leak Penalty (Stake Reduction)
+end
+
+@enduml

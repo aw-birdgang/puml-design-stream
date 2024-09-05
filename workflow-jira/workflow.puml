@@ -1,0 +1,17 @@
+@startuml
+actor Developer
+actor Tester
+actor Reviewer
+actor DevOps
+
+Developer -> "To Do": Create Task
+Developer -> "In Progress": Start Work
+Developer -> "In Review": Submit for Review
+Reviewer -> "In Review": Review Code
+Reviewer -> "In Testing": Approve and Move to Testing
+Tester -> "In Testing": Test the Code
+Tester -> "Ready for Deployment": Approve and Move to Deployment
+DevOps -> "Deployed": Deploy to Production
+"Deployed" -> Developer: Notify of Successful Deployment
+Developer -> "Done": Mark as Done
+@enduml

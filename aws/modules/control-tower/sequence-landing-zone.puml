@@ -1,0 +1,37 @@
+@startuml
+
+title AWS Control Tower Setup for Organization and Account Management
+
+actor User as u
+
+u -> AWS_Console : Log in to AWS Management Console
+u -> AWS_Console : Access AWS Control Tower Service
+
+activate AWS_Console
+AWS_Console -> Control_Tower_Setup : Start Setup Landing Zone
+Control_Tower_Setup -> Control_Tower_Setup : Provide Configuration (Admin Account, OU, Log Account, Audit Account)
+Control_Tower_Setup -> Guardrails : Select Basic Guardrails
+Control_Tower_Setup -> OU_Management : Create Organizational Units (OUs)
+Control_Tower_Setup -> Account_Creation : Create Core Accounts (Log, Audit)
+deactivate AWS_Console
+
+u -> AWS_CLI : Configure AWS CLI
+u -> AWS_CLI : Create User with Admin Access
+u -> AWS_CLI : Create Organizational Units
+u -> AWS_CLI : Create Managed Account
+
+activate AWS_CLI
+AWS_CLI -> CloudTrail : Enable CloudTrail for Logging
+AWS_CLI -> AWS_Config : Enable AWS Config for Compliance Tracking
+AWS_CLI -> Security_Hub : Enable AWS Security Hub
+deactivate AWS_CLI
+
+Control_Tower_Setup -> Monitoring : Configure Monitoring & Logging
+Monitoring -> CloudTrail : Enable Organization-wide CloudTrail
+Monitoring -> AWS_Config : Enable Organization-wide AWS Config
+Monitoring -> Security_Hub : Enable Organization-wide Security Hub
+
+u -> AWS_Console : Regularly Review and Update Guardrails
+u -> AWS_Console : Monitor Security & Compliance Status
+
+@enduml

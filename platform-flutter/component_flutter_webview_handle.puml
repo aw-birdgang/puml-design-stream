@@ -1,0 +1,52 @@
+@startuml
+
+actor User
+
+package "Flutter App" {
+  [WebViewExample]
+  [WebView] as WebViewFlutter
+  [MethodChannel] as FlutterMethodChannel
+}
+
+package "Android" {
+  [MainActivity]
+  [BroadcastReceiver]
+  [SurfaceAndroidWebView]
+}
+
+package "iOS" {
+  [AppDelegate]
+  [NotificationCenter]
+  [CupertinoWebView]
+}
+
+package "React Web Page" {
+  [WebView] as WebViewReact
+  [JavaScript Function] as JSFunction
+}
+
+User -> WebViewExample: Open App
+WebViewExample --> WebViewFlutter: Load URL (https://your-react-app-url.com)
+
+WebViewFlutter --> SurfaceAndroidWebView: Use Android WebView
+WebViewFlutter --> CupertinoWebView: Use iOS WebView
+
+MainActivity --> MainActivity: onCreate()
+MainActivity --> MainActivity: handleIntent(intent)
+MainActivity --> BroadcastReceiver: Receive Intent with Data
+BroadcastReceiver --> MainActivity: Send Data
+
+MainActivity --> FlutterMethodChannel: Send Data to Flutter
+FlutterMethodChannel --> WebViewFlutter: Invoke JavaScript Function
+
+AppDelegate --> AppDelegate: application(_:didFinishLaunchingWithOptions:)
+AppDelegate --> NotificationCenter: Add Observer
+NotificationCenter --> AppDelegate: Receive Notification with Data
+AppDelegate --> FlutterMethodChannel: Send Data to Flutter
+
+WebViewFlutter --> WebViewReact: runJavascript('receiveDataFromFlutter("$data")')
+WebViewReact --> JSFunction: receiveDataFromFlutter(data)
+
+JSFunction --> JSFunction: Process Data
+
+@enduml

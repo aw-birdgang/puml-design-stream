@@ -1,0 +1,19 @@
+@startuml
+skinparam componentStyle rectangle
+
+package "AWS SSO" {
+    component "SSO Portal" as portal
+    component "Identity Source" as identity
+    component "Applications" {
+        component "AWS Management Console" as console
+        component "AWS CLI" as cli
+        component "SAML Applications" as saml
+    }
+}
+
+identity -down-> portal : User Authentication
+portal -down-> console : Single Sign-On
+portal -down-> cli : Single Sign-On
+portal -down-> saml : Single Sign-On
+
+@enduml

@@ -1,0 +1,27 @@
+@startuml
+skinparam backgroundColor #EEEBDC
+
+skinparam sequence {
+    ArrowColor DarkGreen
+    LifeLineBorderColor blue
+    LifeLineBackgroundColor #A9DCDF
+}
+
+actor "Admin" as admin
+entity "IAM Policy" as policy
+entity "IAM Role" as role
+entity "EC2 Instance" as ec2
+entity "S3 Bucket" as s3
+
+admin -> policy : Create IAM Policy
+policy -> policy : Define S3 Access
+admin -> role : Create IAM Role
+role -> role : Define Trust Policy
+admin -> role : Attach Policy
+role -> policy : Attach IAM Policy
+admin -> ec2 : Launch EC2 Instance
+admin -> ec2 : Assign IAM Role
+ec2 -> role : Assume IAM Role
+ec2 -> s3 : Access S3 Bucket
+
+@enduml

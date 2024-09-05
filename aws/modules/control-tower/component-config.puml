@@ -1,0 +1,25 @@
+@startuml
+skinparam componentStyle rectangle
+
+package "AWS Environment" {
+    component "EC2 Instance" as ec2
+    component "S3 Bucket" as s3
+    component "Security Group" as sg
+}
+
+package "AWS Config" {
+    component "Configuration Recorder" as recorder
+    component "Config Rules" as rules
+    component "Compliance Evaluator" as evaluator
+}
+
+recorder -down-> ec2 : Record Config
+recorder -down-> s3 : Record Config
+recorder -down-> sg : Record Config
+
+rules -down-> evaluator : Define Rules
+evaluator -down-> ec2 : Evaluate Compliance
+evaluator -down-> s3 : Evaluate Compliance
+evaluator -down-> sg : Evaluate Compliance
+
+@enduml

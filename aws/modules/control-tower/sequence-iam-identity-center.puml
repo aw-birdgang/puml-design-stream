@@ -1,0 +1,21 @@
+@startuml
+skinparam componentStyle rectangle
+
+actor "User" as user
+actor "Admin" as admin
+entity "IAM Identity Center" as identityCenter
+entity "AWS Account" as awsAccount
+entity "Application" as app
+
+admin -> identityCenter : Configure IAM Identity Center
+admin -> identityCenter : Create Users and Groups
+admin -> identityCenter : Assign Permissions
+identityCenter -> awsAccount : Manage Access
+identityCenter -> app : Manage Access
+
+user -> identityCenter : Single Sign-On
+identityCenter -> user : Access Granted
+user -> awsAccount : Access AWS Account
+user -> app : Access Application
+
+@enduml

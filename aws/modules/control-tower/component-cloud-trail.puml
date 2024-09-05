@@ -1,0 +1,23 @@
+@startuml
+skinparam componentStyle rectangle
+
+package "AWS Environment" {
+    component "API Calls" as apiCalls
+    component "AWS Services" as services
+}
+
+package "AWS CloudTrail" {
+    component "Trail" as trail
+    component "S3 Bucket" as s3
+    component "CloudWatch Logs" as cwl
+    component "SNS" as sns
+}
+
+apiCalls -down-> trail : Record API Calls
+services -down-> trail : Record Service Events
+
+trail -down-> s3 : Store Logs
+trail -down-> cwl : Stream Logs
+cwl -down-> sns : Send Notifications
+
+@enduml

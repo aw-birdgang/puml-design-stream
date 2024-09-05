@@ -1,0 +1,20 @@
+@startuml
+skinparam componentStyle rectangle
+
+package "AWS Control Tower" {
+    component "Account Factory" as accFactory
+    component "Account Template" as template {
+        component "IAM Roles and Policies" as iam
+        component "Network Configuration" as network
+        component "Tags" as tags
+        component "Security Settings" as security
+    }
+}
+
+accFactory -down-> template : Select Template
+template -down-> iam : Apply IAM Roles and Policies
+template -down-> network : Apply Network Configuration
+template -down-> tags : Apply Tags
+template -down-> security : Apply Security Settings
+
+@enduml

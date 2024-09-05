@@ -1,0 +1,30 @@
+@startuml
+skinparam backgroundColor #EEEBDC
+
+skinparam sequence {
+    ArrowColor DarkGreen
+    LifeLineBorderColor blue
+    LifeLineBackgroundColor #A9DCDF
+}
+
+actor Developer as Dev
+participant "GitHub" as GitHub
+participant "CodePipeline" as Pipeline
+participant "CodeBuild" as Build
+participant "CodeDeploy" as Deploy
+participant "ECS Cluster" as ECS
+entity "aa"
+
+Dev -> GitHub : Push Code
+GitHub -> Pipeline : Trigger Pipeline
+Pipeline -> GitHub : Get Source Code
+Pipeline -> Build : Start Build
+Build -> Build : Compile and Test
+Build -> Pipeline : Return Build Status (Success/Failure)
+Pipeline -> Deploy : Deploy to ECS
+Deploy -> ECS : Deploy Containerized Application
+ECS -> Deploy : Acknowledge Deployment
+Deploy -> Pipeline : Report Deployment Status
+Pipeline -> Dev : Notify Success/Failure
+
+@enduml

@@ -1,0 +1,20 @@
+@startuml
+actor User
+
+User --> (terraform init) : Run `terraform init`
+(terraform init) --> User : Initialize Terraform
+
+User --> (terraform plan) : Run `terraform plan`
+(terraform plan) --> User : Generate Execution Plan
+
+User --> (terraform apply) : Run `terraform apply`
+(terraform apply) --> (Create S3 Bucket) : Create S3 Bucket
+(Create S3 Bucket) --> (S3 Bucket Created) : S3 Bucket Created
+(S3 Bucket Created) --> User : Apply Execution Plan
+
+User --> (terraform destroy) : Run `terraform destroy`
+(terraform destroy) --> (Delete S3 Bucket) : Delete S3 Bucket
+(Delete S3 Bucket) --> (S3 Bucket Deleted) : S3 Bucket Deleted
+(S3 Bucket Deleted) --> User : Destroy Resources
+
+@enduml
