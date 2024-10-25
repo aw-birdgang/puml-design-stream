@@ -1,0 +1,50 @@
+@startuml
+skinparam componentStyle rectangle
+
+actor "Developer" as Dev
+
+component "AWS Glue Crawler (Source)" as SourceCrawler {
+  [Scan Schema]
+  [Send Schema to Catalog]
+}
+
+component "AWS Glue Crawler (Target)" as TargetCrawler {
+  [Scan Schema]
+  [Send Schema to Catalog]
+}
+
+component "AWS Glue Catalog" as Catalog {
+  [Store Source Schema]
+  [Store Target Schema]
+}
+
+component "AWS Glue ETL Job" as Job {
+  [Extract Data]
+  [Transform Data]
+  [Load Data]
+}
+
+component "Source Database (MySQL)" as SourceDB
+component "Target Database (PostgreSQL)" as TargetDB
+
+Dev --> SourceCrawler : Configure & Start Crawler
+Dev --> TargetCrawler : Configure & Start Crawler
+Dev --> Job : Create & Start ETL Job
+
+SourceCrawler -> SourceDB : Scan Source Schema
+SourceCrawler -> Catalog : Send Schema to Catalog
+
+TargetCrawler -> TargetDB : Scan Target Schema
+TargetCrawler -> Catalog : Send Schema to Catalog
+
+Catalog --> Job : Provide Schema Metadata
+
+Job -> SourceDB : Extract Data
+SourceDB -> Job : Send Raw Data
+
+Job -> Job : Transform Data (e.g., Hash Passwords)
+Job -> TargetDB : Load Transformed Data
+TargetDB -> Job : Confirm Data Load
+
+Job --> Dev : Notify Job Completion
+@enduml

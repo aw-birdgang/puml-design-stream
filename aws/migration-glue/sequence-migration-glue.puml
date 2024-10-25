@@ -1,0 +1,39 @@
+@startuml
+skinparam backgroundColor #EEEBDC
+
+skinparam sequence {
+    ArrowColor DarkGreen
+    LifeLineBorderColor blue
+    LifeLineBackgroundColor #A9DCDF
+}
+
+participant Developer as Dev
+participant "Glue Crawler (Source)" as SourceCrawler
+participant "Glue Catalog" as Catalog
+participant "Glue ETL Job" as Job
+participant "Glue Crawler (Target)" as TargetCrawler
+
+database "MySQL Source DB" as SourceDB
+database "PostgreSQL Target DB" as TargetDB
+
+Dev -> SourceCrawler: Create and configure Source Crawler
+SourceCrawler -> SourceDB: Scan and extract schema
+SourceDB --> SourceCrawler: Send schema information
+SourceCrawler -> Catalog: Store source schema in Glue Catalog
+
+Dev -> TargetCrawler: Create and configure Target Crawler
+TargetCrawler -> TargetDB: Scan and extract schema
+TargetDB --> TargetCrawler: Send schema information
+TargetCrawler -> Catalog: Store target schema in Glue Catalog
+
+Dev -> Job: Create Glue ETL Job
+Job -> Catalog: Read source schema from Glue Catalog
+Job -> SourceDB: Extract data from SourceDB
+SourceDB --> Job: Send raw data
+
+Job -> Job: Transform data (e.g., hash passwords)
+Job -> TargetDB: Load transformed data to TargetDB
+TargetDB --> Job: Confirm data load
+
+Job -> Dev: Notify job completion
+@enduml

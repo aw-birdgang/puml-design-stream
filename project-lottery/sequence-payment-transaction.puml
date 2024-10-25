@@ -1,0 +1,133 @@
+@startuml
+skinparam backgroundColor #EEEBDC
+
+skinparam sequence {
+    ArrowColor DarkGreen
+    LifeLineBorderColor blue
+    LifeLineBackgroundColor #A9DCDF
+}
+
+actor User
+actor BackOffice
+participant "Lao Lottery Application" as App
+participant "Lao Lottery Server" as LaoLottery
+entity "OnePay APP" as OnePay
+participant "BCEL BANK" as BCEL
+
+== Payment Process Initiation ==
+User -> App: Click pay btn
+activate App
+note right of App
+User initiates the payment process
+by clicking the pay button.
+end note
+
+App --> App: Generate QR with order details
+note right of App
+The App generates a QR code by assembling
+the following parameters:
+- mcc, ccy, country, province, expiretime
+- transactionid, invoiceid, terminalid, amount, description
+- MCC, currency, and additional details for BCEL and OnePay
+The QR code is finalized with a checksum.
+end note
+
+note right of App
+onepay://qr/00020101021133730004BCEL0106ONEPAY0216mch654c4119097280314202405031459390513CLOSEWHENDONE5204594553034185405200005802LA6003VTE624701102088750545052024137178808816000001070524137630468E1
+end note
+App -> OnePay : Transfer deep link
+activate OnePay
+OnePay --> OnePay : Open app UI for payment
+OnePay -> BCEL : Confirm payment request
+activate BCEL
+
+deactivate OnePay
+deactivate App
+deactivate BCEL
+
+== PUBNUB Registration for Payment Monitoring ==
+
+note over App
+The App subscribes to PubNub for real-time
+payment status updates.
+end note
+
+App --> App: Initialize PubNub client
+App --> App: Subscribe to payment status channel
+activate App
+note right of App
+PubNub establishes a connection to the
+payment status update channel.
+end note
+
+App --> App: Confirm subscription to the channel
+App --> App: Wait for payment status update
+deactivate App
+
+== Payment Execution ==
+User -> BCEL: Scan and pay via BCEL One
+activate BCEL
+BCEL --> App: Publish payment success event
+activate App
+note right of App
+PubNub broadcasts the payment success status
+to subscribed clients.
+end note
+App -> App: Notify payment success via PubNub
+note right of App
+{
+ "id": 1234567890,
+ "mcid": "mch1234567890123",
+ "tid": "NAGA",
+ "iid": "+85620123456",
+ "uuid": "220221234567890",
+ "txtime": "06/09/2022 13:22:57",
+ "amount": 10000,
+ "fccref": "202209061234567",
+ "cancelled": null
+}
+end note
+
+deactivate BCEL
+note right of App
+end note
+deactivate LaoLottery
+App --> LaoLottery: Update order to 'Paid'
+App --> User: Display ticket results
+
+deactivate App
+
+== End of Lottery Round and Reward Transfer ==
+activate BackOffice
+BackOffice -> LaoLottery: Send winner list to BCEL
+activate LaoLottery
+loop for each winner
+    LaoLottery -> BCEL: Send winner details to BCEL
+    note right of LaoLottery
+    {
+     "nonce": 1667531475458,
+     "app": "NAGA",
+     "command": "reward",
+     "uuid": "220221234567890",
+     "username": "+85620123456",
+     "amount": 600000
+    }
+    end note
+    activate BCEL
+    BCEL --> BCEL: Confirm reward transfer for winner
+    BCEL -> LaoLottery: Respond reward transferred for winner
+    note right of LaoLottery
+    {
+     "result": 0,
+     "message": null,
+     "fccref": "202209061234567",
+     "account": "010-12-00-XXXXXX89-001"
+    }
+    end note
+    deactivate BCEL
+    LaoLottery --> LaoLottery: Confirm transfer success for winner
+end
+LaoLottery -> BackOffice: Respond winner of reward transfer
+deactivate LaoLottery
+deactivate BackOffice
+@enduml

@@ -1,0 +1,49 @@
+@startuml
+skinparam backgroundColor #EEEBDC
+skinparam component {
+    BorderColor DarkGreen
+    BackgroundColor #A9DCDF
+}
+
+actor User
+actor BackOffice
+
+package "Payment System" {
+    [Lao Lottery Application] as App
+    [Lao Lottery Server] as LaoLottery
+    [OnePay APP] as OnePay
+    [BCEL BANK] as BCEL
+    [PubNub Client] as PubNub
+}
+
+User --> App : Click pay btn
+App --> OnePay : Transfer deep link for payment
+OnePay --> BCEL : Confirm payment request
+BCEL --> PubNub : Publish payment status
+
+PubNub --> App : Notify payment success
+
+App --> LaoLottery : Update order status to 'Paid'
+App --> User : Display ticket result
+
+BackOffice --> LaoLottery : Send winner list for reward
+
+LaoLottery --> BCEL : Send reward details for each winner
+BCEL --> LaoLottery : Respond with reward transfer status
+
+note right of App
+- Generates QR Code with order details
+- Connects to PubNub for real-time updates
+end note
+
+note right of LaoLottery
+- Updates payment status
+- Sends reward details to BCEL
+end note
+
+note right of BCEL
+- Confirms payment
+- Handles reward transfers
+end note
+
+@enduml

@@ -1,0 +1,68 @@
+@startuml
+title User Types for DLPE System
+
+package "Existing User Types" {
+    class "Local APP Player" as LocalAPPPlayer
+    class "Backoffice (Admin) Manager" as BackofficeManager
+    class "POS Seller" as POSSeller
+    class "APP Seller" as APPSeller
+    class "Purchasing Agent" as PurchasingAgent
+}
+
+package "New User Types" {
+    class "Integrated Seller" as IntegratedSeller
+    class "Partner" as Partner
+    class "Global Player" as GlobalPlayer
+    class "Global Seller" as GlobalSeller
+}
+
+' Define relationships
+BackofficeManager --> LocalAPPPlayer : manages
+BackofficeManager --> POSSeller : manages
+BackofficeManager --> APPSeller : manages
+BackofficeManager --> PurchasingAgent : manages
+BackofficeManager --> IntegratedSeller : manages
+BackofficeManager --> Partner : manages
+BackofficeManager --> GlobalPlayer : manages
+BackofficeManager --> GlobalSeller : manages
+
+' Integrate existing types to new types
+POSSeller --> IntegratedSeller : becomes
+APPSeller --> IntegratedSeller : becomes
+
+' Notes for detailed roles
+note left of LocalAPPPlayer
+  - Buy lottery tickets via app
+  - Check draw results
+  - Play bonus games
+  - Purchase from point shop
+  - Transfer points to other players
+  - Receive winnings via bank account or cash
+end note
+
+note left of BackofficeManager
+  - Manage lottery rounds, tickets
+  - Oversee user accounts
+  - Create reports, manage payments, taxes
+  - Administer POS machines
+end note
+
+note right of IntegratedSeller
+  - Sell lottery tickets via POS or App
+  - Unified account for both systems
+  - Handle commissions, payments
+end note
+
+note right of Partner
+  - Partner stores accepting Gold Point as payment
+  - Manage Gold Point transactions
+  - Receive cash settlement from DLPE
+end note
+
+note right of PurchasingAgent
+  - Sell tickets through external site
+  - Operate as an intermediary for out-of-country sales
+  - Receive commission from DLPE
+end note
+
+@enduml

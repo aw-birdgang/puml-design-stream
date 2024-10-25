@@ -1,0 +1,52 @@
+@startuml
+skinparam backgroundColor #EEEBDC
+
+skinparam sequence {
+    ArrowColor DarkGreen
+    LifeLineBorderColor blue
+    LifeLineBackgroundColor #A9DCDF
+}
+
+actor User
+participant Controller as "sendPoints"
+participant PointsService as "pointsService"
+participant GetDataService as "getDataService"
+participant Logger as "logger"
+
+User -> Controller: sendPoints(req, inputDTO)
+
+Controller -> PointsService: sendPointSystemFromTo('transfer_gold', 0) or ('transfer_gold_partner', 0)
+alt if transfer is allowed
+    PointsService -> Controller: returns transferLimitData
+
+    Controller -> GetDataService: getMemberByID(inputDTO.toMemberId)
+    GetDataService -> Controller: returns memberData
+
+    Controller -> PointsService: sendPointFromTo(memberType, req.memberIdx, inputDTO.memberType, memberData.memberIdx, inputDTO.pointType, inputDTO.points, 'H58', '')
+
+    PointsService -> PointsService: checkMemberPointsError()
+    PointsService -> PointsService: checkMemberPointsError()
+    PointsService -> PointsService: getMemberPoints(fromMemberType, fromMemberIdx)
+    PointsService -> PointsService: getMemberPoints(toMemberType, toMemberIdx)
+    PointsService -> PointsService: getNewTransactionNo()
+
+    PointsService -> PointsService: depositMemberPoints(fromMemberType, fromMemberIdx, pointType, -1 * points, classify, fromMemo, transactionNo)
+    PointsService -> PointsService: depositMemberPoints(toMemberType, toMemberIdx, pointType, points, classify, toMemo, transactionNo)
+
+    Controller -> PointsService: getPointsHistoryNoByTransactionNo(req.memberIdx, transactionData)
+    PointsService -> Controller: return result
+
+    Controller -> User: returns historyIdx
+
+else if transfer is not allowed
+    PointsService -> Controller: returns null
+    Controller -> Logger: error transfer not allowed
+    Controller -> User: throws ErrorException (DAT_ERROR_030)
+
+end
+
+== Error Handling ==
+Controller -> Logger: error message
+Controller -> User: throws ErrorException
+
+@enduml

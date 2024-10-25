@@ -1,0 +1,41 @@
+@startuml
+title DLPE System - User Types Component Diagram
+
+' Define components for the system
+component "Local APP" as LocalAPP
+component "Backoffice System" as Backoffice
+component "POS System" as POSSystem
+component "Seller Manager" as SellerManager
+component "Partner System" as PartnerSystem
+component "Purchasing System" as PurchasingSystem
+component "Global System" as GlobalSystem
+
+' Define actors (user types)
+actor "Local APP Player" as LocalAPPPlayer
+actor "Backoffice (Admin) Manager" as BackofficeManager
+actor "POS Seller" as POSSeller
+actor "APP Seller" as APPSeller
+actor "Purchasing Agent" as PurchasingAgent
+actor "Integrated Seller" as IntegratedSeller
+actor "Partner" as Partner
+actor "Global Player" as GlobalPlayer
+actor "Global Seller" as GlobalSeller
+
+' Relationships between actors and components
+LocalAPPPlayer --> LocalAPP : Uses for tickets, games, and purchases
+IntegratedSeller --> POSSystem : Uses POS machine for sales
+IntegratedSeller --> SellerManager : Uses for app-based sales
+PurchasingAgent --> PurchasingSystem : Uses for out-of-country sales
+BackofficeManager --> Backoffice : Manages all users, sales, and reports
+Partner --> PartnerSystem : Uses for Gold Point transactions
+GlobalPlayer --> GlobalSystem : Uses for ticket purchases and management
+GlobalSeller --> GlobalSystem : Manages global sales
+
+' Components interact with Backoffice system
+Backoffice <--> POSSystem : Syncs POS sales data
+Backoffice <--> SellerManager : Syncs app sales data
+Backoffice <--> PartnerSystem : Manages partner transactions
+Backoffice <--> PurchasingSystem : Manages purchasing agents
+Backoffice <--> GlobalSystem : Manages global users and sales
+
+@enduml
