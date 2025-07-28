@@ -1,0 +1,63 @@
+@startuml msa_step12_final_architecture
+
+title OfficeNow MSA - Final Architecture
+
+actor "Users" as U
+
+package "Client" {
+  [Web App] as WA
+  [Mobile App] as MA
+}
+
+package "API Gateway" {
+  [Kong Gateway] as AG
+}
+
+package "Core Services" {
+  [Auth Service] as AS
+  [User Service] as US
+  [Payment Service] as PayS
+}
+
+package "Business Services" {
+  [Parking Service] as PS
+  [Facility Service] as FS
+}
+
+package "Infrastructure" {
+  [Databases] as DB
+  [Cache] as CACHE
+  [Message Queue] as MQ
+}
+
+' Client to Gateway
+U --> WA
+U --> MA
+WA --> AG
+MA --> AG
+
+' Gateway to Services
+AG --> AS : /auth
+AG --> US : /users
+AG --> PayS : /payment
+AG --> PS : /parking
+AG --> FS : /facility
+
+' Service Dependencies
+PS --> PayS
+FS --> PayS
+
+' Infrastructure Connections
+AS --> DB
+US --> DB
+PayS --> DB
+PS --> DB
+FS --> DB
+
+AS --> CACHE
+US --> CACHE
+
+PS --> MQ
+FS --> MQ
+
+@enduml

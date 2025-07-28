@@ -1,0 +1,42 @@
+@startuml msa_step8_migration
+
+title OfficeNow MSA - Migration Strategy
+
+actor "Users" as U
+
+package "Legacy" {
+  [Monolith] as MONO
+}
+
+package "New Services" {
+  [Auth Service] as AS
+  [User Service] as US
+  [Parking Service] as PS
+  [Facility Service] as FS
+}
+
+package "Migration" {
+  [API Gateway] as AG
+  [Feature Toggle] as FT
+}
+
+' User requests
+U --> AG
+
+' Migration routing
+AG --> FT
+FT --> MONO : Legacy
+FT --> AS : New
+FT --> US : New
+FT --> PS : New
+FT --> FS : New
+
+note right of AG
+  API Gateway
+end note
+
+note right of FT
+  Feature Toggle
+end note
+
+@enduml

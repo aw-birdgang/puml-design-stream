@@ -1,0 +1,55 @@
+@startuml msa_step7_observability
+
+title OfficeNow MSA - Observability
+
+package "Services" {
+  [User Service] as US
+  [Parking Service] as PS
+  [Facility Service] as FS
+  [Payment Service] as PayS
+}
+
+package "Monitoring" {
+  [Prometheus] as Prom
+  [Grafana] as GF
+  [Jaeger] as J
+  [ELK] as ELK
+}
+
+' Metrics
+US --> Prom
+PS --> Prom
+FS --> Prom
+PayS --> Prom
+
+Prom --> GF
+
+' Tracing
+US --> J
+PS --> J
+FS --> J
+PayS --> J
+
+' Logging
+US --> ELK
+PS --> ELK
+FS --> ELK
+PayS --> ELK
+
+note right of Prom
+  Prometheus
+end note
+
+note right of GF
+  Grafana
+end note
+
+note right of J
+  Jaeger
+end note
+
+note right of ELK
+  ELK Stack
+end note
+
+@enduml

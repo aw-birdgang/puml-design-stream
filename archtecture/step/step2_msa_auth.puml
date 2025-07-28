@@ -1,0 +1,58 @@
+@startuml msa_step2_auth
+
+title OfficeNow MSA - Auth Service Separation (Simplified)
+
+actor "Users" as U
+actor "Admin" as A
+
+package "API Gateway" {
+  [Gateway] as G
+}
+
+package "Services" {
+  [Auth Service] as AS
+  [User Service] as US
+}
+
+package "Infrastructure" {
+  [Database] as DB
+  [Cache] as RC
+  [Email Service] as ES
+}
+
+' User interactions
+U --> G : Login/Register
+A --> G : Admin Access
+
+' Gateway routing
+G --> AS : /auth
+G --> US : /users
+
+' Service connections
+AS --> DB : User data
+AS --> RC : Sessions
+AS --> ES : Verification emails
+US --> DB : User profiles
+US --> RC : User cache
+
+note right of G
+  API Gateway
+  - Single entry point
+  - Authentication
+  - Request routing
+end note
+
+note right of AS
+  Auth Service
+  - JWT tokens
+  - OAuth
+  - Session management
+end note
+
+note right of US
+  User Service
+  - User profiles
+  - Preferences
+end note
+
+@enduml

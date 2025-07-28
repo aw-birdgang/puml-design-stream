@@ -1,0 +1,32 @@
+@startuml msa_step5_communication
+
+title OfficeNow MSA - Service Communication
+
+package "Services" {
+  [User Service] as US
+  [Parking Service] as PS
+  [Facility Service] as FS
+  [Payment Service] as PayS
+  [Notification Service] as NS
+}
+
+package "Message Queue" {
+  [Kafka] as MQ
+}
+
+' Events
+PS --> MQ : Events
+FS --> MQ : Events
+PayS --> MQ : Events
+
+' Notifications
+PayS --> NS : Notifications
+PS --> NS : Notifications
+FS --> NS : Notifications
+
+note right of MQ
+  Kafka
+  - Event Streaming
+end note
+
+@enduml

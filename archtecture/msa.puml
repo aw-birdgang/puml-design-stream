@@ -1,0 +1,93 @@
+@startuml
+skinparam rectangle {
+  BackgroundColor #F9F9F9
+  BorderColor #333
+  Shadowing false
+}
+skinparam componentStyle rectangle
+
+title Microservices Architecture (No Direct DB Access)
+
+' ==============================
+' API Gateway
+' ==============================
+package "API Gateway Layer" {
+  rectangle "API Gateway" as APIGateway
+}
+
+' ==============================
+' Auth Service
+' ==============================
+package "Auth Service" {
+  rectangle "AuthService" as AuthService
+  database "Auth DB\n(PostgreSQL + Redis)" as AuthDB
+  AuthService --> AuthDB : Query / Token Store
+}
+
+' ==============================
+' User Service
+' ==============================
+package "User Service" {
+  rectangle "UserService" as UserService
+  database "User DB\n(PostgreSQL)" as UserDB
+  UserService --> UserDB : CRUD
+}
+
+' ==============================
+' Order Service
+' ==============================
+package "Order Service" {
+  rectangle "OrderService" as OrderService
+  database "Order DB\n(PostgreSQL)" as OrderDB
+  OrderService --> OrderDB : Manage Orders
+}
+
+' ==============================
+' Payment Service
+' ==============================
+package "Payment Service" {
+  rectangle "PaymentService" as PaymentService
+  database "Payment DB\n(PostgreSQL or TimescaleDB)" as PaymentDB
+  PaymentService --> PaymentDB : Payment Logs
+}
+
+' ==============================
+' Notification Service
+' ==============================
+package "Notification Service" {
+  rectangle "NotificationService" as NotificationService
+  database "Notification DB\n(MongoDB)" as NotificationDB
+  NotificationService --> NotificationDB : Logs
+}
+
+' ==============================
+' Infrastructure
+' ==============================
+package "Infrastructure" {
+  rectangle "Kafka\n(Message Broker)" as Kafka
+}
+
+' ==============================
+' Gateway Routing
+' ==============================
+APIGateway --> AuthService : Auth API
+APIGateway --> UserService : User API
+APIGateway --> OrderService : Order API
+APIGateway --> PaymentService : Payment API
+
+' ==============================
+' Inter-Service API Calls
+' ==============================
+PaymentService --> OrderService : GET /orders/:id
+
+' ==============================
+' Event-Driven Communication
+' ==============================
+OrderService --> Kafka : Publish OrderCreated
+Kafka --> PaymentService : Subscribe OrderCreated
+Kafka --> NotificationService : Subscribe OrderCreated
+
+PaymentService --> Kafka : Publish PaymentSuccess
+Kafka --> NotificationService : Notify User
+
+@enduml

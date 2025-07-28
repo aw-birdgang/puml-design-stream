@@ -1,0 +1,29 @@
+@startuml msa_step1_monolith
+
+title OfficeNow Monolith Architecture (Simplified)
+
+actor "Users" as U
+actor "Admin" as A
+
+package "Monolith" {
+  [Controllers] as C
+  [Services] as S
+  [Repositories] as R
+  [Database] as DB
+}
+
+' User interactions
+U --> C : HTTP Requests
+A --> C : Admin Requests
+
+' Internal flow
+C --> S : Business Logic
+S --> R : Data Access
+R --> DB : Database Operations
+
+note right of DB
+  Single Database
+  - All business data
+end note
+
+@enduml

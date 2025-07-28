@@ -1,0 +1,40 @@
+@startuml msa_final_architecture
+
+package "API Gateway Layer" {
+  [API Gateway]
+}
+
+package "Services" {
+  [Auth Service]
+  [User Service]
+  [Parking Service]
+  [Facility Service]
+  [Energy Service]
+  [Community Service]
+  [Notification Service]
+}
+
+package "Infra & Observability" {
+  [Kafka]
+  [Prometheus]
+  [Grafana]
+  [ELK]
+}
+
+[API Gateway] --> [Auth Service]
+[API Gateway] --> [User Service]
+[API Gateway] --> [Parking Service]
+[API Gateway] --> [Facility Service]
+[API Gateway] --> [Energy Service]
+[API Gateway] --> [Community Service]
+
+[Parking Service] --> [Kafka] : Publish Event
+[Facility Service] --> [Kafka]
+
+[Auth Service] --> [Prometheus]
+[Parking Service] --> [Prometheus]
+[User Service] --> [ELK]
+
+[Prometheus] --> [Grafana]
+
+@enduml

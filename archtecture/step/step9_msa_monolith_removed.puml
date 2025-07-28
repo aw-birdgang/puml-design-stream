@@ -1,0 +1,47 @@
+@startuml msa_step9_monolith_removed
+
+title OfficeNow MSA - Monolith Removed
+
+actor "Users" as U
+
+package "Client" {
+  [Web App] as WA
+  [Mobile App] as MA
+}
+
+package "API Gateway" {
+  [Kong Gateway] as AG
+}
+
+package "Services" {
+  [Auth Service] as AS
+  [User Service] as US
+  [Parking Service] as PS
+  [Facility Service] as FS
+  [Payment Service] as PayS
+}
+
+' Client connections
+U --> WA
+U --> MA
+
+' Gateway connections
+WA --> AG
+MA --> AG
+
+' Service routing
+AG --> AS : /auth
+AG --> US : /users
+AG --> PS : /parking
+AG --> FS : /facility
+AG --> PayS : /payment
+
+' Service communication
+PS --> PayS : Payment
+FS --> PayS : Payment
+
+note right of AG
+  Kong Gateway
+end note
+
+@enduml

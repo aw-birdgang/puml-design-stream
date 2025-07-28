@@ -1,0 +1,31 @@
+@startuml
+skinparam rectangle {
+  BackgroundColor #FAFAFA
+  BorderColor #444
+  Shadowing false
+}
+skinparam componentStyle rectangle
+
+title Monolithic Architecture Overview
+
+rectangle "Monolith Application" {
+  rectangle "Auth Module\n(PostgreSQL + Redis)" as Auth
+  rectangle "User Module\n(PostgreSQL)" as User
+  rectangle "Order Module\n(PostgreSQL)" as Order
+  rectangle "Payment Module\n(PostgreSQL)" as Payment
+  rectangle "Notification Module\n(MongoDB)" as Notify
+}
+
+database "Monolith DB" as DB
+Auth --> DB
+User --> DB
+Order --> DB
+Payment --> DB
+Notify --> DB
+
+' Internal service-to-service calls
+Order --> Payment : Call directly
+Order --> Notify : Call directly
+Payment --> Notify : Call directly
+
+@enduml

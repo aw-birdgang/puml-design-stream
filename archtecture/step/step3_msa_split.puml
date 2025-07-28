@@ -1,0 +1,51 @@
+@startuml msa_step3_split
+
+title OfficeNow MSA - Service Split (Simplified)
+
+actor "Users" as U
+actor "Admin" as A
+
+package "Client Layer" {
+  [Web App] as WA
+  [Mobile App] as MA
+  [Admin Dashboard] as AD
+}
+
+package "API Gateway" {
+  [Kong Gateway] as AG
+}
+
+package "Microservices" {
+  [Auth Service] as AS
+  [User Service] as US
+  [Parking Service] as PS
+  [Facility Service] as FS
+  [Energy Service] as ES
+  [Community Service] as CS
+}
+
+' Client connections
+U --> WA
+U --> MA
+A --> AD
+
+' Gateway connections
+WA --> AG
+MA --> AG
+AD --> AG
+
+' Service routing
+AG --> AS : /auth
+AG --> US : /users
+AG --> PS : /parking
+AG --> FS : /facility
+AG --> ES : /energy
+AG --> CS : /community
+
+note right of AG
+  Kong API Gateway
+  - Authentication
+  - Routing
+end note
+
+@enduml

@@ -1,0 +1,35 @@
+@startuml msa_step10_sync_strategy
+
+title OfficeNow MSA - Data Synchronization
+
+package "Services" {
+  [User Service] as US
+  [Parking Service] as PS
+  [Facility Service] as FS
+  [Payment Service] as PayS
+}
+
+package "Event Bus" {
+  [Kafka] as KEB
+}
+
+package "Consumers" {
+  [Analytics] as AC
+  [Notifications] as NC
+}
+
+' Events
+US --> KEB : Events
+PS --> KEB : Events
+FS --> KEB : Events
+PayS --> KEB : Events
+
+' Processing
+KEB --> AC : Analytics
+KEB --> NC : Notifications
+
+note right of KEB
+  Kafka
+end note
+
+@enduml

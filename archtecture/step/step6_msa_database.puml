@@ -1,0 +1,47 @@
+@startuml msa_step6_database
+
+title OfficeNow MSA - Database Structure
+
+package "Services" {
+  [Auth Service] as AS
+  [User Service] as US
+  [Parking Service] as PS
+  [Facility Service] as FS
+  [Payment Service] as PayS
+}
+
+package "Databases" {
+  [Auth DB] as ADB
+  [User DB] as UDB
+  [Parking DB] as PDB
+  [Facility DB] as FDB
+  [Payment DB] as PayDB
+}
+
+AS --> ADB
+US --> UDB
+PS --> PDB
+FS --> FDB
+PayS --> PayDB
+
+note right of ADB
+  Auth DB
+end note
+
+note right of UDB
+  User DB
+end note
+
+note right of PDB
+  Parking DB
+end note
+
+note right of FDB
+  Facility DB
+end note
+
+note right of PayDB
+  Payment DB
+end note
+
+@enduml

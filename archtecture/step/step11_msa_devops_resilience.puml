@@ -1,0 +1,46 @@
+@startuml msa_step11_devops_resilience
+
+title OfficeNow MSA - DevOps & Resilience
+
+package "Services" {
+  [User Service] as US
+  [Parking Service] as PS
+  [Facility Service] as FS
+  [Payment Service] as PayS
+}
+
+package "Infrastructure" {
+  [Istio] as Istio
+  [Prometheus] as Prom
+  [Kubernetes] as K8s
+}
+
+' Service mesh
+US --> Istio
+PS --> Istio
+FS --> Istio
+PayS --> Istio
+
+' Monitoring
+US --> Prom
+PS --> Prom
+FS --> Prom
+PayS --> Prom
+
+' Deployment
+K8s --> Istio
+K8s --> Prom
+
+note right of Istio
+  Service Mesh
+end note
+
+note right of Prom
+  Prometheus
+end note
+
+note right of K8s
+  Kubernetes
+end note
+
+@enduml
