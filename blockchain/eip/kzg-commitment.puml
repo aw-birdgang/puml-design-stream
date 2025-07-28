@@ -1,0 +1,25 @@
+@startuml
+title KZG Commitment Process for Data Integrity Verification
+
+actor User as U
+entity Data_Shard as DS <<Blob Data>>
+entity Polynomial_Converter as PC <<Polynomial Conversion>>
+entity KZG_Commitment_Generator as KZG <<KZG Commitment Generation>>
+entity Ethereum_Network as EN <<Ethereum Network>>
+
+== Blob 데이터를 다항식으로 변환 ==
+U -> DS : Submit Blob Data [d0, d1, d2, ...]
+DS -> PC : Convert Data to Polynomial P(x)
+PC -> DS : Polynomial P(x) = d0 + d1*x + d2*x^2 + ...
+
+== KZG Commitment 생성 ==
+DS -> KZG : Generate Commitment C(P) from Polynomial P(x)
+KZG -> DS : Return Commitment C(P)
+
+== 데이터 가용성 검증 ==
+EN -> DS : Request Data Availability Check
+DS -> EN : Provide Evaluation Points P(a), P(b), ...
+EN -> EN : Verify C(P) with Evaluation Points
+EN -> U : Data Integrity Confirmed if Valid
+
+@enduml

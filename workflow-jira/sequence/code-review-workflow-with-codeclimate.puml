@@ -1,0 +1,40 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam sequence {
+    ArrowColor #3E8ED0
+    ActorBorderColor #3E8ED0
+    ActorBackgroundColor #E6F2FF
+    ParticipantBorderColor #3E8ED0
+    ParticipantBackgroundColor #E6F2FF
+    BoxBackgroundColor #F8F8F8
+    BoxBorderColor #C0C0C0
+    LifeLineBorderColor #3E8ED0
+    LifeLineBackgroundColor #FFFFFF
+    SequenceFontName Arial
+    SequenceFontSize 12
+    SequenceFontColor #333333
+}
+
+actor Developer as Dev #lightblue
+
+box "CodeClimate System" #lightgrey
+    participant Repo as "Repository"
+    participant CC as "CodeClimate Analysis"
+    participant Dashboard as "CodeClimate Dashboard"
+end box
+
+Dev -> Repo : Commit Changes
+Dev -> CC : Push Changes to Repository
+CC -> Dashboard : Analyze Code Quality
+
+Dashboard -> Dev : Report Issues (Maintainability, Complexity, Duplication)
+
+alt Issues Detected
+    Dev -> IDE : Apply Fixes
+    Dev -> CC : Push Fixes
+    CC -> Dashboard : Re-analyze Code
+else No Issues
+    Dashboard -> Dev : Confirm Code Quality
+end
+
+@enduml

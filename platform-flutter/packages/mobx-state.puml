@@ -1,0 +1,34 @@
+@startuml
+skinparam backgroundColor #EEEBDC
+skinparam state {
+    BackgroundColor #A9DCDF
+    BorderColor blue
+}
+
+[*] --> Idle : Initial state
+
+state Idle {
+    [*] --> WaitingForAction
+    WaitingForAction --> ActionTriggered : User triggers action
+}
+
+state ActionTriggered {
+    [*] --> UpdateState : Update Observable state
+}
+
+state UpdateState {
+    [*] --> RecalculateComputed : Recalculate computed values
+    RecalculateComputed --> NotifyObserver : Notify Observer
+}
+
+state NotifyObserver {
+    [*] --> UpdateUI : Observer triggers UI update
+}
+
+Idle --> ActionTriggered : Action occurs
+ActionTriggered --> UpdateState : Observable state updated
+UpdateState --> NotifyObserver : Notify Observer
+NotifyObserver --> UpdateUI : UI updated
+UpdateUI --> Idle : Back to idle state
+
+@enduml

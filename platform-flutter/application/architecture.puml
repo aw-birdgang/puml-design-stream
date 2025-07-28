@@ -1,0 +1,68 @@
+@startuml
+!define RECTANGLE
+!define DB
+
+package "Flutter Project" {
+
+  package "View (UI Layer)" {
+    component Flutter
+    component "Cupertino Icons"
+    component "Google Fonts"
+    component "Flutter Localizations"
+  }
+
+  package "ViewModel (State Management)" {
+    component Mobx
+    component "Flutter Mobx"
+    component "Event Bus"
+    component "Another Flushbar"
+  }
+
+  package "Model (Data Layer)" {
+    component "Dio"
+    component "Http"
+    component "Shared Preferences"
+    package "Sembast DB" {
+      component "Sembast"
+      component "Sembast Web"
+    }
+    component "Intl"
+    component "Json Serializable"
+  }
+
+  package "Service Layer" {
+    component "Get It"
+    component "Logger"
+  }
+
+  package "Dev Tools" {
+    component "Build Runner"
+    component "Mobx Codegen"
+    component "Analyzer"
+    component "Flutter Test"
+  }
+
+  Flutter --> "Cupertino Icons"
+  Flutter --> "Google Fonts"
+  Flutter --> "Flutter Localizations"
+  Flutter <--> Mobx
+
+  Mobx <--> "Flutter Mobx"
+  Mobx --> "Event Bus"
+  Mobx --> "Another Flushbar"
+
+  "Shared Preferences" <--> "Sembast"
+  "Dio" --> "Http"
+  "Sembast" --> "Sembast Web"
+  "Intl" --> "Json Serializable"
+
+  Mobx <--> "Shared Preferences"
+  Mobx --> "Get It"
+
+  "Logger" --> "Dev Tools"
+  "Build Runner" --> "Mobx Codegen"
+  "Build Runner" --> "Analyzer"
+  "Flutter Test" --> Flutter
+}
+
+@enduml

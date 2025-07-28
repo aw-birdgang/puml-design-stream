@@ -1,0 +1,30 @@
+@startuml
+title EIP-4844 Proto-Danksharding Workflow
+
+actor User as U
+entity Layer2_Rollup as L2 <<Layer 2 Solution>>
+entity Ethereum_Network as EN <<Ethereum Network>>
+
+U -> L2 : Submit Transactions (1000 txs)
+L2 -> L2 : Compress transactions into Blob
+L2 -> EN : Submit Blob with Transaction
+
+group Ethereum Network Process
+    EN -> EN : Generate KZG Commitment for Blob
+    EN -> EN : Add KZG Commitment to Block Header
+    EN -> L2 : Acknowledge Blob Receipt
+end
+
+group Data Availability Sampling
+    EN -> EN : Periodic Sampling of Blob for Data Availability
+end
+
+L2 -> L2 : Process Transactions from Blob
+L2 -> U : Confirm Transaction Processing
+
+group Blob Expiry
+    EN -> EN : Delete Blob Data after Expiry Period
+    EN -> EN : Retain KZG Commitment for Proof of Availability
+end
+
+@enduml

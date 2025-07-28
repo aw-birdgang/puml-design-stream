@@ -1,0 +1,26 @@
+@startuml
+skinparam componentStyle rectangle
+skinparam defaultTextAlignment center
+
+' Crypto API
+component "Crypto API\n(NestJS, Go, etc.)" as CryptoAPI
+
+' Monitoring stack
+component "Prometheus\n(Metrics)" as Prometheus
+component "Loki / ELK\n(Logs)" as Logs
+
+component "Grafana\n(Dashboards)" as Grafana
+component "Kibana / Grafana\n(Log Visualization)" as LogViewer
+
+component "Alertmanager / PagerDuty\n(Alerts & Notifications)" as Alerting
+
+' Relationships
+CryptoAPI --> Prometheus : Metrics
+CryptoAPI --> Logs : Logs
+
+Prometheus --> Grafana
+Logs --> LogViewer
+
+Grafana --> Alerting
+
+@enduml

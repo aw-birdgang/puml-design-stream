@@ -1,0 +1,79 @@
+@startuml
+!theme plain
+
+entity User {
+  +id : UUID <<PK>>
+  name : string
+  email : string
+  createdAt : DateTime
+}
+
+entity UserProfile {
+  +id : UUID <<PK>>
+  userId : UUID <<FK>>
+  mbti : string
+  loveLanguage : string
+  attachmentStyle : string
+  conflictReaction : string
+  communicationStyle : string
+  sensitiveTo : text[]
+  preferredThings : text[]
+  dislikedThings : text[]
+  createdAt : DateTime
+}
+
+entity Couple {
+  +id : UUID <<PK>>
+  userAId : UUID <<FK>>
+  userBId : UUID <<FK>>
+  startedAt : Date
+  status : string
+  createdAt : DateTime
+}
+
+entity EmotionRecord {
+  +id : UUID <<PK>>
+  coupleId : UUID <<FK>>
+  userId : UUID <<FK>>
+  date : Date
+  rawText : text
+  aiEmotionSummary : text
+  emotionScore : int
+  emotionType : string
+  tags : text[]
+  createdAt : DateTime
+}
+
+entity CoupleEvent {
+  +id : UUID <<PK>>
+  coupleId : UUID <<FK>>
+  createdBy : UUID <<FK>>
+  date : Date
+  title : string
+  description : text
+  eventType : string
+  mediaUrl : string
+  createdAt : DateTime
+}
+
+entity EmotionSnapshot {
+  +id : UUID <<PK>>
+  coupleId : UUID <<FK>>
+  startDate : Date
+  endDate : Date
+  aiSummary : text
+  trend : string
+  createdAt : DateTime
+}
+
+' Relationships
+UserProfile ||--|| User : userId
+EmotionRecord }o--|| User : userId
+EmotionRecord }o--|| Couple : coupleId
+CoupleEvent }o--|| Couple : coupleId
+CoupleEvent }o--|| User : createdBy
+EmotionSnapshot }o--|| Couple : coupleId
+Couple ||--|| User : userAId
+Couple ||--|| User : userBId
+
+@enduml

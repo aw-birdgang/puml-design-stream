@@ -1,0 +1,15 @@
+@startuml
+actor User
+participant "Exchange Frontend" as Frontend
+participant "Travel Rule Engine" as TRE
+participant "Compliance Admin" as CA
+participant "Counterparty VASP" as CV
+
+User -> Frontend : 출금 요청 (e.g. 2.5 BTC)
+Frontend -> TRE : 수신자 정보 요청
+TRE -> User : 이름, 주소, 목적 등 입력 UI 제공
+User -> TRE : 정보 입력
+TRE -> CV : 정보 전송
+TRE -> CA : 기록 저장
+Frontend -> Blockchain : 출금 실행
+@enduml

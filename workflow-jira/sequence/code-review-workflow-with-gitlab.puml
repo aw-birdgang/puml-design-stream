@@ -1,0 +1,58 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam sequence {
+    ArrowColor #3E8ED0
+    ActorBorderColor #3E8ED0
+    ActorBackgroundColor #E6F2FF
+    ParticipantBorderColor #3E8ED0
+    ParticipantBackgroundColor #E6F2FF
+    BoxBackgroundColor #F8F8F8
+    BoxBorderColor #C0C0C0
+    LifeLineBorderColor #3E8ED0
+    LifeLineBackgroundColor #FFFFFF
+    SequenceFontName Arial
+    SequenceFontSize 12
+    SequenceFontColor #333333
+}
+
+actor Developer as Dev #lightblue
+actor Reviewer as Rev #orange
+actor CICD as CI #green
+
+box "GitLab" #lightgrey
+    participant Repo as "Repository"
+    participant MR as "Merge Request System"
+end box
+
+Dev -> Repo : Commit Changes
+Dev -> MR : Create Merge Request
+MR -> Dev : Confirm MR Creation
+
+Dev -> MR : Assign Reviewers
+MR -> Rev : Notify Reviewers
+
+MR -> CI : Trigger CI Pipeline
+CI -> MR : Report CI Status (Pass/Fail)
+
+alt CI Fails
+    CI -> Dev : Notify Issues
+    Dev -> Repo : Commit Fixes
+    Repo -> MR : Update MR
+    MR -> CI : Re-run CI Pipeline
+else CI Passes
+    Rev -> MR : Add Comments or Approve MR
+    MR -> Dev : Notify Feedback
+end
+
+alt Revisions Needed
+    Dev -> Repo : Commit Fixes
+    Repo -> MR : Update MR
+    MR -> Rev : Notify Updates
+else Approved
+    Rev -> MR : Approve MR
+    Dev -> MR : Merge MR
+end
+
+MR -> Dev : Notify Merge Completion
+
+@enduml

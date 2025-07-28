@@ -1,0 +1,27 @@
+@startuml
+skinparam backgroundColor #EEEBDC
+
+skinparam sequence {
+    ArrowColor DarkGreen
+    LifeLineBorderColor blue
+    LifeLineBackgroundColor #A9DCDF
+}
+
+actor User as 유저
+
+유저 -> Main : 실행
+Main -> ethclient : DialContext(infuraURL)
+alt 성공적으로 연결된 경우
+    ethclient -> Main : Client 객체 반환
+    Main -> ethclient : BlockByNumber(context, nil)
+    alt 블록 정보 조회 성공
+        ethclient -> Main : 최신 Block 정보 반환
+        Main -> 유저 : 최신 블록 번호 출력
+    else 블록 정보 조회 실패
+        Main -> 유저 : 에러 메시지 출력 ("Error to get a block")
+    end
+else 연결 실패
+    Main -> 유저 : 에러 메시지 출력 ("Error to create a ether client")
+end
+
+@enduml

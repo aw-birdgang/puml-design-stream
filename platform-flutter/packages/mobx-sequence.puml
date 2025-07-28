@@ -1,0 +1,23 @@
+@startuml
+skinparam backgroundColor #EEEBDC
+
+skinparam sequence {
+    ArrowColor DarkGreen
+    LifeLineBorderColor blue
+    LifeLineBackgroundColor #A9DCDF
+}
+
+actor User
+participant Action
+participant Observable
+participant Computed
+participant Observer
+participant UI
+
+User -> Action : Trigger Action
+Action -> Observable : Update state
+Observable -> Computed : Recalculate computed values
+Observable -> Observer : Notify state change
+Observer -> UI : Update UI with new state
+
+@enduml

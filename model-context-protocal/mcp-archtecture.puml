@@ -1,0 +1,15 @@
+@startuml
+skinparam defaultTextAlignment center
+skinparam shadowing false
+skinparam backgroundColor #ffffff
+
+title MCP Model Architecture
+
+rectangle "MCP Model File\n\n- identity\n- functions\n- schemas (input/output)\n- metadata" as MCP
+rectangle "Execution Engine\n\n- Request validation\n- Schema parsing\n- Prompt rendering\n- Response formatting" as Engine
+rectangle "Language Model\n(GPT, Claude, Mistral 등)" as LM
+
+MCP --> Engine : 사용자 호출 시
+Engine --> LM
+
+@enduml

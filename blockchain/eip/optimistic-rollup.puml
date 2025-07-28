@@ -1,0 +1,33 @@
+@startuml
+title Optimistic Rollup Transaction and Challenge Process
+
+actor User
+actor Challenger
+entity L2_Rollup as L2 <<Layer 2 Optimistic Rollup>>
+entity Ethereum_Mainnet as L1 <<Ethereum Mainnet>>
+
+== 거래 처리 및 Batch 생성 ==
+User -> L2 : Submit Transactions
+L2 -> L2 : Process Transactions and Create Batch
+L2 -> L1 : Submit Batch Result (State Update)
+
+== 도전 기간 (Challenge Period) ==
+L1 -> L1 : Start Challenge Period
+alt Challenge Detected
+    Challenger -> L1 : Submit Fraud Proof (Transaction Error)
+    L1 -> L2 : Verify Fraud Proof
+    alt Fraud Detected
+        L2 -> L1 : Rollback Invalid Transactions
+        L1 -> Challenger : Reward for Fraud Detection
+    else Fraud Not Detected
+        L1 -> Challenger : Reject Challenge (Penalty)
+    end
+else No Challenge Submitted
+    L1 -> L1 : Finalize Batch as Valid
+end
+
+== 최종 확정 ==
+L1 -> L2 : Confirm Batch Finalization
+L2 -> User : Transactions Finalized
+
+@enduml

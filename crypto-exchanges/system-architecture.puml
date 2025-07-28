@@ -1,0 +1,15 @@
+@startuml
+actor User
+participant "📱 Exchange UI"
+participant "🛂 KYC Provider" as KYCP
+participant "🚨 AML Engine" as AE
+participant "🛡️ Admin Panel" as AP
+participant "📦 Database / Logging"
+
+User -> UI : 회원 가입 / KYC 시작
+UI -> KYCP : ID 인증 요청
+KYCP -> UI : 결과 전달 (승인 / 반려)
+UI -> AE : IP / 주소 / 국가 / 행동 분석
+AE -> AP : 이상 탐지 시 경고
+UI -> DB : 사용자 상태 저장 (KYC/AML 상태)
+@enduml

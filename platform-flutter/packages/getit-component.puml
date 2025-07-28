@@ -1,0 +1,39 @@
+@startuml
+skinparam backgroundColor #EEEBDC
+skinparam component {
+    BackgroundColor #A9DCDF
+    BorderColor blue
+    FontColor black
+    FontSize 14
+    FontStyle bold
+    ArrowColor DarkGreen
+    StereotypeFontColor DarkBlue
+    StereotypeFontSize 12
+}
+
+package "GetIt Package" {
+
+  component "GetIt" {
+    [Service Locator]
+  }
+
+  component "MyService" {
+    [Business Logic]
+  }
+
+  component "AnotherService" {
+    [Another Business Logic]
+  }
+
+  component "UI (HomeScreen)" {
+    [User Interface]
+  }
+
+  "Service Locator" --> "MyService" : Resolves dependency
+  "Service Locator" --> "AnotherService" : Resolves dependency
+  "UI (HomeScreen)" --> "Service Locator" : Requests dependencies
+  "UI (HomeScreen)" --> "MyService" : Calls methods
+  "UI (HomeScreen)" --> "AnotherService" : Calls methods
+
+}
+@enduml

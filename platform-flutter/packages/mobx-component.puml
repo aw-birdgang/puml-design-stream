@@ -1,0 +1,31 @@
+@startuml
+skinparam backgroundColor #EEEBDC
+
+skinparam component {
+    BackgroundColor #A9DCDF
+    BorderColor blue
+    FontColor black
+    FontSize 14
+    FontStyle bold
+    ArrowColor DarkGreen
+    StereotypeFontColor DarkBlue
+    StereotypeFontSize 12
+}
+
+package "MobX Package" {
+    [Store] --> [Observable] : Manages
+    [Store] --> [Action] : Executes
+    [Store] --> [Computed] : Calculates
+
+    [Observable] --> [Observer] : Notifies changes
+    [Observer] --> [UI] : Updates UI
+    [Action] --> [Observable] : Updates state
+    [Computed] --> [Observable] : Depends on
+}
+
+actor User
+
+User --> [Action] : Triggers
+[Action] --> [Observable] : Modifies state
+[Observer] --> [UI] : Renders updated UI
+@enduml

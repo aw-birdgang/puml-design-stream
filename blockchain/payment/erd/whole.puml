@@ -1,0 +1,128 @@
+@startuml
+!define primary_key(x) <b><color:red><&key> x</color></b>
+!define foreign_key(x) <color:blue><&key> x</color>
+!define column(x) <color:#efefef><&media-record></color> x
+!define table(x) entity x << (T, white) >>
+
+left to right direction
+skinparam roundcorner 5
+skinparam shadowing false
+skinparam handwritten false
+skinparam class {
+    BackgroundColor white
+    ArrowColor #2688d4
+    BorderColor #2688d4
+}
+
+title 'Payments Service ERD
+
+table( client ) {
+    primary_key( client_code ) : varchar(30)
+    column( client_name ): varchar(30)
+    column( created_at ) : datetime
+    column( updated_at ) : datetime
+}
+
+table( client_manager ) {
+    primary_key( manager_id ) : varchar(30)
+    column( name ): varchar(30)
+    column( pass ): varchar(100)
+    column( email ): varchar(50)
+    column( type): varchar(1)
+    column( client_code ): varchar(30)
+    column( created_at ) : datetime
+    column( updated_at ) : datetime
+}
+
+
+table( client_wallet_deposit ) {
+    primary_key( id ) : varchar(10)
+    foreign_key( client_wallet_id ) : varchar(44)
+    column( address ) : varchar(44)
+    column( name ) : varchar(20)
+    column( network ) : varchar(10)
+    column( enable ) : bigint
+    column( created_at ) : datetime
+    column( updated_at ) : datetime
+}
+
+
+table( client_wallet ) {
+    primary_key( coin ) : varchar(10)
+    foreign_key( client_code ): varchar(30)
+    column( coin_in_enable ): bigint
+    column( coin_in_disable ): bigint
+    column( coin_price_avg ) : float
+    column( updated_at ) : datetime
+}
+
+table( client_master_wallet ) {
+    primary_key( client_code ): varchar(30)
+    column( network ) : varchar(10)
+    column( wallet_address ) : varchar(44)
+    column( wallet_private_key ) : varchar(140)
+    column( created_at ) : datetime
+    column( updated_at ) : datetime
+}
+
+table( client_apikey ) {
+    primary_key( client_code ): varchar(30)
+    column( api_key ): varchar(50)
+    column( webhook_url ): varchar(60)
+    column( created_at ) : datetime
+    column( updated_at ) : datetime
+}
+
+
+table( coin_address ) {
+    primary_key( network ) : varchar(10)
+    primary_key( address ) : varchar(44)
+    column( private_key ): varchar(140)
+    column( client_code ): varchar(30)
+    column( mapped_at ) : datetime
+    column( created_at ) : datetime
+    column( updated_at ) : datetime
+}
+
+table( coin_address_register ) {
+    primary_key( id ) : bigint
+    foreign_key( network ) : varchar(10)
+    foreign_key( address ) : varchar(44)
+    foreign_key( client_code ): varchar(30)
+    column( mapped_at ) : datetime
+}
+
+table( coin_trade_fee ) {
+    primary_key( transaction_no ) : bigint
+    primary_key( coin ) : varchar(10)
+    column( network ) : varchar(10)
+    column( fees ): bigint
+    column( created_at ) : datetime
+}
+
+table( deposit_transactions ) {
+    primary_key( id ) : bigint
+    column( from ) : varchar(42)
+    column( to ) : varchar(42)
+    column( amounts ) : decimal(16,8)
+    column( status ) : varchar(10)
+    column( decimals ) : int
+    column( client_wallet_id ) : varchar(42)
+    column( ticker ) : varchar(10)
+    column( transferType ) : varchar(10)
+    column( txId ) : varchar(42)
+    column( txhash ) : varchar(66)
+    column( created_at ) : datetime
+    column( updated_at ) : datetime
+}
+
+client::client_code ||--|| client_manager::client_code
+client::client_code ||--|| client_wallet::client_code
+client::client_code ||--|| client_apikey::client_code
+client::client_code ||--|| client_master_wallet::client_code
+client::client_code ||--|| coin_address_register::client_code
+client::client_code ||--|| deposit_transactions::client_code
+
+coin_address::network ||--|| coin_address_register::network
+coin_address::address ||--|| coin_address_register::address
+@enduml

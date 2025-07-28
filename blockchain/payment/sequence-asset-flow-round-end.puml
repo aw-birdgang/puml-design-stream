@@ -1,0 +1,67 @@
+@startuml
+!define RECTANGLE_CLASS
+!define RECTANGLE_BLUE Class<<BLUE>>
+
+skinparam shadowing false
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #0000FF
+skinparam activity {
+    BackgroundColor<<BLUE>> #ADD8E6
+    BorderColor<<BLUE>> #00008B
+    FontColor<<BLUE>> #00008B
+    FontSize 12
+}
+skinparam class {
+    BackgroundColor #FEFECE
+    BorderColor #B8860B
+    ArrowColor #B8860B
+    FontSize 12
+    FontName Arial
+}
+skinparam usecase {
+    BackgroundColor #FFFFA3
+    BorderColor #FFA500
+    FontSize 12
+    FontName Arial
+}
+skinparam package {
+    BackgroundColor #FFFFFF
+    BorderColor #B8860B
+    FontSize 12
+    FontName Arial
+}
+skinparam participant {
+    BackgroundColor #B0E0E6
+    BorderColor #4682B4
+    FontSize 12
+    FontName Arial
+}
+
+actor User
+actor Manager
+entity Web
+entity BackOffice
+entity LottoModule
+database Database
+
+
+
+== Round Ended ==
+
+
+Manager -[#0000FF]> BackOffice : enter the winning number.
+BackOffice -[#0000FF]> LottoModule : winning numbers.
+LottoModule -[#0000FF]-> LottoModule : check the winning numbers & \nget winners.
+note left : when the round ends, \nthe manager enters the winning number \nand updates the winner list.
+LottoModule --[#0000FF]> Database : update winning number.
+
+User -[#0000FF]> Web : claim ticket (if won)
+Web -[#0000FF]> LottoModule : claim
+
+LottoModule --[#0000FF]> LottoModule : verify the claim ticket.
+LottoModule --> Database: update claim ticket status and reward points.
+note left : updates reward payment status for the claim ticket \nand provides reward points to the user.
+LottoModule --> User : reward points
+
+
+@enduml

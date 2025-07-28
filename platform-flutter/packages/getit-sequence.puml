@@ -1,0 +1,26 @@
+@startuml
+skinparam backgroundColor #EEEBDC
+
+skinparam sequence {
+    ArrowColor DarkGreen
+    LifeLineBorderColor blue
+    LifeLineBackgroundColor #A9DCDF
+}
+
+actor User
+
+participant "UI (HomeScreen)"
+participant "GetIt (Service Locator)"
+participant "MyService"
+participant "AnotherService"
+
+User -> "UI (HomeScreen)" : Interact with UI
+"UI (HomeScreen)" -> "GetIt (Service Locator)" : Request MyService instance
+"GetIt (Service Locator)" -> "MyService" : Return MyService instance
+"UI (HomeScreen)" -> "MyService" : Call fetchData()
+
+"UI (HomeScreen)" -> "GetIt (Service Locator)" : Request AnotherService instance
+"GetIt (Service Locator)" -> "AnotherService" : Return AnotherService instance
+"UI (HomeScreen)" -> "AnotherService" : Call processData()
+
+@enduml

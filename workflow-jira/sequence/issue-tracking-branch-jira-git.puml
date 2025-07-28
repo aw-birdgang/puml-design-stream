@@ -1,0 +1,55 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam sequence {
+    ArrowColor #3E8ED0
+    ActorBorderColor #3E8ED0
+    ActorBackgroundColor #E6F2FF
+    ParticipantBorderColor #3E8ED0
+    ParticipantBackgroundColor #E6F2FF
+    BoxBackgroundColor #F8F8F8
+    BoxBorderColor #C0C0C0
+    LifeLineBorderColor #3E8ED0
+    LifeLineBackgroundColor #FFFFFF
+    SequenceFontName Arial
+    SequenceFontSize 12
+    SequenceFontColor #333333
+}
+actor Reporter
+actor Developer
+actor Master
+participant "Jira" as Jira
+participant "Local Git Repository" as LocalGit
+participant "Remote Git Repository" as RemoteGit
+participant "Pull Request" as PR
+
+Reporter -> Jira: Create Issue (PROJECT-123)
+Jira -> Reporter: Issue Key (PROJECT-123)
+
+Developer -> LocalGit: git checkout -b feature/PROJECT-123-login-feature
+
+Developer -> LocalGit: Implement login feature in Nest.js
+Developer -> LocalGit: git add .
+Developer -> LocalGit: git commit -m "[PROJECT-123] Add user login feature"
+
+Developer -> RemoteGit: git push origin feature/PROJECT-123-login-feature
+
+Developer -> PR: Create Pull Request
+PR -> Master: Code Review & Feedback
+
+Master -> Developer: Provide Review Feedback
+Developer -> LocalGit: git add .
+Developer -> LocalGit: git commit -m "[PROJECT-123] Address review feedback"
+Developer -> RemoteGit: git push origin feature/PROJECT-123-login-feature
+
+Master -> PR: Approve and Merge
+PR -> RemoteGit: Merge feature/PROJECT-123-login-feature into main
+Master -> LocalGit: git checkout main
+Master -> RemoteGit: git pull origin main
+Master -> LocalGit: git merge --no-ff feature/PROJECT-123-login-feature
+Master -> RemoteGit: git push origin main
+
+Master -> LocalGit: git branch -d feature/PROJECT-123-login-feature
+Master -> RemoteGit: git push origin --delete feature/PROJECT-123-login-feature
+
+Master -> Jira: Mark Issue (PROJECT-123) as Done
+@enduml

@@ -1,0 +1,33 @@
+@startuml
+title Layer 2 Rollup Process (ZK-Rollup and Optimistic Rollup)
+
+actor User
+entity L2_Rollup as L2 <<Layer 2 Rollup>>
+entity Ethereum_Mainnet as L1 <<Ethereum Mainnet>>
+
+== Transaction Submission ==
+User -> L2 : Submit Transactions (multiple transactions)
+L2 -> L2 : Batch and Compress Transactions
+
+alt ZK-Rollup
+    L2 -> L2 : Generate Zero-Knowledge Proof
+    L2 -> L1 : Submit Batch and Proof to Mainnet
+    L1 -> L1 : Verify Zero-Knowledge Proof
+    L1 -> L2 : Confirm Valid Transactions
+    L2 -> User : Confirm Transactions are Finalized
+end
+
+alt Optimistic Rollup
+    L2 -> L1 : Submit Batch without Immediate Proof
+    L1 -> L1 : Allow Challenge Period
+    User -> L1 : Submit Challenge if Fraud Detected (optional)
+    alt No Challenge
+        L1 -> L2 : Confirm Valid Transactions
+    else Challenge Submitted
+        L2 -> L1 : Perform Fraud Proof Verification
+        L1 -> L1 : Revert Fraudulent Transactions
+    end
+    L2 -> User : Confirm Transactions are Finalized after Challenge Period
+end
+
+@enduml

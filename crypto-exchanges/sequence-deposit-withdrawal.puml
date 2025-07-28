@@ -1,0 +1,22 @@
+@startuml
+actor User
+participant "User Wallet" as Wallet
+participant "Blockchain Node" as Node
+participant "Exchange Listener" as Listener
+participant "Internal System" as System
+participant "Exchange Wallet" as ExchangeWallet
+
+== Deposit ==
+User -> Wallet : Send crypto to deposit address
+Wallet -> Node : Broadcast transaction
+Node --> Listener : Detect transaction
+Listener -> System : Credit user balance
+System -> User : Show updated balance
+
+== Withdrawal ==
+User -> System : Request withdrawal
+System -> ExchangeWallet : Create + sign TX
+ExchangeWallet -> Node : Broadcast TX
+Node -> System : Confirm TX status
+System -> User : Notify withdrawal complete
+@enduml

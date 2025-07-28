@@ -1,0 +1,22 @@
+@startuml
+title ZK-Rollup Transaction Process
+
+actor User
+entity L2_Rollup as L2 <<Layer 2 ZK-Rollup>>
+entity Ethereum_Mainnet as L1 <<Ethereum Mainnet>>
+
+== 거래 모으기 및 압축 ==
+User -> L2 : Submit Transactions
+L2 -> L2 : Batch Transactions
+
+== 유효성 증명 생성 ==
+L2 -> L2 : Generate Zero-Knowledge Proof (ZK Proof)
+
+== 메인체인에 증명 및 데이터 제출 ==
+L2 -> L1 : Submit Batch and ZK Proof
+L1 -> L1 : Verify ZK Proof
+L1 -> L2 : Confirm Valid Transactions
+
+== 상태 업데이트 ==
+L2 -> User : Transactions Finalized
+@enduml

@@ -1,0 +1,62 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam sequence {
+    ArrowColor #3E8ED0
+    ActorBorderColor #3E8ED0
+    ActorBackgroundColor #E6F2FF
+    ParticipantBorderColor #3E8ED0
+    ParticipantBackgroundColor #E6F2FF
+    BoxBackgroundColor #F8F8F8
+    BoxBorderColor #C0C0C0
+    LifeLineBorderColor #3E8ED0
+    LifeLineBackgroundColor #FFFFFF
+    SequenceFontName Arial
+    SequenceFontSize 12
+    SequenceFontColor #333333
+}
+
+actor Developer as D #lightblue
+actor Reviewer as R #orange
+actor CICD as CI #green
+
+box "Version Control System" #lightgrey
+    participant VCS as "Version Control"
+end box
+
+box "Review Tools" #lightyellow
+    participant SQ as "SonarQube"
+    participant CR as "Crucible"
+    participant CC as "CodeClimate"
+end box
+
+D -> VCS : Create Pull Request (PR)
+VCS -> CI : Trigger Pipeline
+CI -> VCS : Update PR Status (Success/Failure)
+
+VCS -> SQ : Perform Static Analysis
+SQ -> VCS : Report Issues
+
+VCS -> CR : Perform Code Review
+CR -> VCS : Report Feedback
+
+VCS -> CC : Perform Quality Check
+CC -> VCS : Report Metrics
+
+R -> VCS : Review PR
+VCS -> R : Notify Comments or Approvals
+
+R -> D : Provide Feedback
+D -> VCS : Commit Fixes
+VCS -> R : Notify Updates
+
+alt Approved
+    R -> VCS : Approve PR
+    D -> VCS : Merge PR
+else Changes Requested
+    R -> D : Request Further Changes
+    D -> VCS : Push More Changes
+end
+
+VCS -> D : Notify Merge Completion
+
+@enduml

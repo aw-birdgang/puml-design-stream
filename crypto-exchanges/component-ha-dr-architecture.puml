@@ -1,0 +1,35 @@
+@startuml
+skinparam componentStyle rectangle
+skinparam defaultTextAlignment center
+
+' Top-Level DNS
+component "AWS Route 53\n(DNS)" as Route53
+
+' Load Balancer
+component "Multi-AZ Load Balancer" as LoadBalancer
+
+' Application Servers in ASG
+component "App Server A\n(Auto Scaling Group)" as AppA
+component "App Server B\n(Auto Scaling Group)" as AppB
+
+' Database Layer
+component "PostgreSQL RDS\n(Multi-AZ, Failover)" as RDS
+
+' Redis Cache
+component "Redis Cluster\n(Replication + Backup)" as Redis
+
+' Backup Storage
+component "S3 + Glacier\n(Daily Backup)" as S3
+
+' Connections
+Route53 --> LoadBalancer
+LoadBalancer --> AppA
+LoadBalancer --> AppB
+
+AppA --> RDS
+AppB --> RDS
+
+RDS --> Redis
+Redis --> S3
+
+@enduml

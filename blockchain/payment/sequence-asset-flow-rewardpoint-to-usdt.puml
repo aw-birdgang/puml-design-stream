@@ -1,0 +1,72 @@
+@startuml
+!define RECTANGLE_CLASS
+!define RECTANGLE_BLUE Class<<BLUE>>
+
+skinparam shadowing false
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #0000FF
+skinparam activity {
+    BackgroundColor<<BLUE>> #ADD8E6
+    BorderColor<<BLUE>> #00008B
+    FontColor<<BLUE>> #00008B
+    FontSize 12
+}
+skinparam class {
+    BackgroundColor #FEFECE
+    BorderColor #B8860B
+    ArrowColor #B8860B
+    FontSize 12
+    FontName Arial
+}
+skinparam usecase {
+    BackgroundColor #FFFFA3
+    BorderColor #FFA500
+    FontSize 12
+    FontName Arial
+}
+skinparam package {
+    BackgroundColor #FFFFFF
+    BorderColor #B8860B
+    FontSize 12
+    FontName Arial
+}
+skinparam participant {
+    BackgroundColor #B0E0E6
+    BorderColor #4682B4
+    FontSize 12
+    FontName Arial
+}
+
+actor User
+actor Manager
+entity Web
+entity BackOffice
+entity LottoModule
+database Database
+
+
+
+== Exchange USDT with reward points ==
+
+User -[#0000FF]> Web : request to exchange reward points for USDT.
+Web --> User: point exchange page is exposed.
+note right : point exchange page must include a function \nto enter the address to receive USDT.
+
+User -[#0000FF]> Web : request to exchange reward points for usdt.
+Web -[#0000FF]> LottoModule: exchange
+
+activate LottoModule
+LottoModule --[#0000FF]> LottoModule : verifies the user's reward points.
+LottoModule --[#0000FF]> LottoModule : wait for approval for exchange. & notify
+Manager --[#0000FF]> BackOffice : approve
+BackOffice --[#0000FF]> LottoModule : approve
+
+
+LottoModule --> LottoModule : transfer usdt to the user's wallet address.
+note left: transfer the equivalent amount of reward points \nin USDT to the user's wallet address.
+LottoModule --> Database : updates the status of the user's reward points \nand transactions.
+
+deactivate LottoModule
+
+
+@enduml

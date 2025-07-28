@@ -1,0 +1,58 @@
+@startuml
+skinparam componentStyle rectangle
+skinparam defaultTextAlignment center
+
+' Clients
+component "🌐 Clients\nReact, iOS, Android" as Clients
+
+' API Gateway / Load Balancer
+component "API Gateway / LB\nNginx, AWS ALB, Kong" as Gateway
+
+' Application Layer
+package "Application Layer (NestJS)" {
+  component "Auth API" as AuthAPI
+  component "Trade API" as TradeAPI
+  component "Admin API" as AdminAPI
+  component "KYC Engine" as KYC
+  component "Wallet Service" as Wallet
+  component "Order Matcher" as Matcher
+}
+
+' Data Stores & Brokers
+component "Redis" as Redis
+component "PostgreSQL" as PostgreSQL
+component "Kafka / RabbitMQ\nAsync events, logs" as MessageBroker
+
+' Blockchain Layer
+component "Blockchain Node Layer\nGeth, Bitcoin Core\n(Deposit / Withdrawal)" as Blockchain
+
+' Audit & Analytics
+component "Audit Log & Analytics\nELK, Loki, BigQuery" as Audit
+
+' Monitoring
+component "Monitoring & Alerts\nPrometheus, Grafana, Sentry" as Monitoring
+
+' Connections
+Clients --> Gateway : HTTPS
+Gateway --> AuthAPI
+Gateway --> TradeAPI
+Gateway --> AdminAPI
+Gateway --> KYC
+Gateway --> Wallet
+Gateway --> Matcher
+
+AuthAPI --> Redis
+TradeAPI --> PostgreSQL
+Wallet --> PostgreSQL
+KYC --> PostgreSQL
+AdminAPI --> PostgreSQL
+Matcher --> MessageBroker
+TradeAPI --> MessageBroker
+
+PostgreSQL --> Blockchain
+MessageBroker --> Blockchain
+
+Blockchain --> Audit
+Audit --> Monitoring
+
+@enduml

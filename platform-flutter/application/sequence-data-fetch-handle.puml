@@ -1,0 +1,38 @@
+@startuml
+!define RECTANGLE
+!define DB
+
+skinparam backgroundColor #EEEBDC
+
+skinparam sequence {
+    ArrowColor DarkGreen
+    LifeLineBorderColor blue
+    LifeLineBackgroundColor #A9DCDF
+}
+
+
+actor User as U
+
+participant View as V
+participant ViewModel as VM
+participant DataProcessor as DP
+participant CacheService as CS
+entity "SharedPreferences/Sembast" as CacheDB
+
+participant APIService as API
+entity "Dio/Http" as Dio
+
+
+U -> V : 버튼 클릭
+V -> VM : onButtonClick()
+VM -> API : fetchData()
+API -> Dio : 요청 전송 (GET/POST)
+Dio -> API : 데이터 응답
+API -> VM : 데이터 반환
+VM -> DP : 데이터 가공
+DP -> CS : 일부 데이터 캐싱
+CS -> CacheDB : 캐시 저장
+DP -> VM : 가공된 데이터 반환
+VM -> V : UI 갱신 또는 화면 전환
+
+@enduml

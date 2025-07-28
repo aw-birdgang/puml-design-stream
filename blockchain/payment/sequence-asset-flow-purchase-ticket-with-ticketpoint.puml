@@ -1,0 +1,65 @@
+@startuml
+!define RECTANGLE_CLASS
+!define RECTANGLE_BLUE Class<<BLUE>>
+
+skinparam shadowing false
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #0000FF
+skinparam activity {
+    BackgroundColor<<BLUE>> #ADD8E6
+    BorderColor<<BLUE>> #00008B
+    FontColor<<BLUE>> #00008B
+    FontSize 12
+}
+skinparam class {
+    BackgroundColor #FEFECE
+    BorderColor #B8860B
+    ArrowColor #B8860B
+    FontSize 12
+    FontName Arial
+}
+skinparam usecase {
+    BackgroundColor #FFFFA3
+    BorderColor #FFA500
+    FontSize 12
+    FontName Arial
+}
+skinparam package {
+    BackgroundColor #FFFFFF
+    BorderColor #B8860B
+    FontSize 12
+    FontName Arial
+}
+skinparam participant {
+    BackgroundColor #B0E0E6
+    BorderColor #4682B4
+    FontSize 12
+    FontName Arial
+}
+
+actor User
+entity Web
+entity BackOffice
+entity LottoModule
+database Database
+
+
+
+== Exchange ticket points for reward points ==
+
+User -> Web: Request to exchange reward points to ticket points
+Web --> User: Point exchange page
+
+User -[#0000FF]> Web : exchange
+Web -[#0000FF]> LottoModule: exchange
+
+activate LottoModule
+alt
+    LottoModule --[#0000FF]> LottoModule: verifies the user's reward points.
+    LottoModule --> Database : update the user's reward & ticket point.
+end
+
+LottoModule --> User: ticket point
+deactivate LottoModule
+
+@enduml

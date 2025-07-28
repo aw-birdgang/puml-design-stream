@@ -1,0 +1,38 @@
+@startuml
+skinparam backgroundColor #EEEBDC
+skinparam state {
+    BackgroundColor #A9DCDF
+    BorderColor blue
+}
+
+[*] --> ServiceLocatorNotInitialized : Initial state
+
+state ServiceLocatorNotInitialized {
+    [*] --> RegisterServices : Setup started
+    RegisterServices --> ServicesRegistered : Services are registered
+}
+
+state ServicesRegistered {
+    [*] --> WaitingForRequest
+    WaitingForRequest --> DependencyRequested : User requests service instance
+}
+
+state DependencyRequested {
+    [*] --> ProvidingService : Providing service instance
+    ProvidingService --> ServiceProvided : Service is provided
+}
+
+state ServiceProvided {
+    [*] --> UsingService : Service is used
+    UsingService --> WaitingForRequest : Back to idle, waiting for next request
+}
+
+[*] --> RegisterServices
+RegisterServices --> ServicesRegistered : Registration complete
+
+DependencyRequested --> ProvidingService : Providing service
+ProvidingService --> ServiceProvided : Service is ready
+ServiceProvided --> UsingService : Using service
+UsingService --> WaitingForRequest : Wait for next request
+
+@enduml

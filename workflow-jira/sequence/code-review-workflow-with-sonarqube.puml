@@ -1,0 +1,41 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam sequence {
+    ArrowColor #3E8ED0
+    ActorBorderColor #3E8ED0
+    ActorBackgroundColor #E6F2FF
+    ParticipantBorderColor #3E8ED0
+    ParticipantBackgroundColor #E6F2FF
+    BoxBackgroundColor #F8F8F8
+    BoxBorderColor #C0C0C0
+    LifeLineBorderColor #3E8ED0
+    LifeLineBackgroundColor #FFFFFF
+    SequenceFontName Arial
+    SequenceFontSize 12
+    SequenceFontColor #333333
+}
+
+actor Developer as Dev #lightblue
+
+box "SonarQube System" #lightgrey
+    participant SonarServer as "SonarQube Server"
+    participant SonarScanner as "SonarScanner"
+    participant Dashboard as "SonarQube Dashboard"
+end box
+
+Dev -> SonarScanner : Run Static Analysis
+SonarScanner -> SonarServer : Upload Analysis Results
+SonarServer -> Dashboard : Display Analysis Report
+
+Dashboard -> Dev : Show Issues (Bugs, Vulnerabilities, Code Smells)
+
+alt Issues Detected
+    Dev -> IDE : Apply Fixes
+    Dev -> SonarScanner : Re-run Analysis
+    SonarScanner -> SonarServer : Upload Updated Results
+    SonarServer -> Dashboard : Refresh Dashboard
+else No Issues
+    Dashboard -> Dev : Confirm Code Quality
+end
+
+@enduml

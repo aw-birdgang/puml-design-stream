@@ -1,0 +1,29 @@
+@startuml
+title Example Data Flow: Trade Matching Process
+
+actor User
+participant "API Gateway" as APIGW
+participant "Matching Engine" as Matcher
+participant "Trade DB" as TradeDB
+participant "Wallet Service" as Wallet
+participant "WebSocket Server" as WebSocket
+
+== 사용자 매수 주문 요청 ==
+User -> APIGW : Place Buy Order (0.5 BTC @ 1,000,000 KRW)
+APIGW -> Matcher : Submit Order
+
+== 매칭 및 체결 ==
+Matcher -> Matcher : Find matching sell orders\n(price <= 1,000,000)
+alt Matching Found
+  Matcher -> Matcher : Execute trade\n(0.5 BTC @ matched price)
+  Matcher -> TradeDB : Save Trade Record
+  Matcher -> Wallet : Update User Wallet Balance
+  Matcher -> WebSocket : Publish Trade Event
+else No Match
+  Matcher -> Matcher : Add to Order Book
+end
+
+== 사용자에게 결과 전송 ==
+WebSocket -> User : Real-time trade update
+
+@enduml

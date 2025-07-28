@@ -1,0 +1,47 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam sequence {
+    ArrowColor #3E8ED0
+    ActorBorderColor #3E8ED0
+    ActorBackgroundColor #E6F2FF
+    ParticipantBorderColor #3E8ED0
+    ParticipantBackgroundColor #E6F2FF
+    BoxBackgroundColor #F8F8F8
+    BoxBorderColor #C0C0C0
+    LifeLineBorderColor #3E8ED0
+    LifeLineBackgroundColor #FFFFFF
+    SequenceFontName Arial
+    SequenceFontSize 12
+    SequenceFontColor #333333
+}
+
+actor Developer as Dev #lightblue
+actor Reviewer as Rev #orange
+
+box "GitHub" #lightgrey
+    participant Repo as "Repository"
+    participant PR as "Pull Request System"
+end box
+
+Dev -> Repo : Commit Changes
+Dev -> PR : Submit Pull Request
+PR -> Dev : Confirm PR Creation
+
+Dev -> PR : Assign Reviewers
+PR -> Rev : Notify Reviewers
+
+Rev -> PR : Add Inline Comments
+PR -> Dev : Notify Feedback
+
+alt Revisions Needed
+    Dev -> Repo : Commit Fixes
+    Repo -> PR : Update PR
+    PR -> Rev : Notify Updates
+else Approved
+    Rev -> PR : Approve PR
+    Dev -> PR : Merge PR
+end
+
+PR -> Dev : Notify Merge Completion
+
+@enduml
