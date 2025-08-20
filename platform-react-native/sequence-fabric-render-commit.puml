@@ -1,0 +1,25 @@
+@startuml
+title Fabric Render Commit (High-level Sequence)
+
+skinparam monochrome true
+
+actor Dev as Developer
+participant "React (JS)" as JS
+participant "JSI (C++)" as JSI
+participant "Fabric Renderer" as Fabric
+participant "ShadowTree" as Shadow
+participant "Yoga" as Yoga
+participant "UIManager (Fabric)" as UIM
+participant "Platform UI Thread" as UIThread
+participant "Native View" as NativeView
+
+Dev -> JS : setState()/render()
+JS -> JSI : commit()
+JSI -> Fabric : build mutations
+Fabric -> Shadow : create/update shadow nodes
+Shadow -> Yoga : layout()
+Yoga --> Fabric : layout results
+Fabric -> UIM : schedule/mount mutations
+UIM -> UIThread : apply updates
+UIThread -> NativeView : create/update UIView / android.view.View
+@enduml

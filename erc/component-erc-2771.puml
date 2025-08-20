@@ -1,0 +1,43 @@
+@startuml
+title ERC-2771 Gasless Architecture (Component Overview)
+
+skinparam componentStyle rectangle
+skinparam shadowing false
+skinparam monochrome true
+
+package "User Side" {
+  actor "User (EOA)" as User
+  component "Wallet / Signer\n(EIP-712)" as Wallet
+  component "DApp Frontend\n(Web/App)" as Frontend
+  User --> Wallet
+  Wallet --> Frontend
+}
+
+package "DApp Backend" {
+  component "Relayer API\n(gas payer)" as Relayer
+}
+
+package "Ethereum Network" {
+  component "Trusted Forwarder\n(MinimalForwarder)" as Forwarder
+  component "Recipient Contract\n(ERC2771Context)" as Recipient
+}
+
+User -down-> Frontend : UX events\n(no ETH required)
+Frontend -right-> Relayer : POST /relay\n{ForwardRequest, signature}
+Relayer -right-> Forwarder : execute(request, sig)\n(pays gas)
+Forwarder -down-> Recipient : call with appended sender\n(msg.sender = Forwarder)
+Recipient -left-> Forwarder : business logic\n_uses _msgSender()
+Forwarder -left-> Relayer : tx result / receipt
+Relayer -left-> Frontend : tx hash / status
+
+note bottom of Forwarder
+- Verifies EIP-712 signature
+- Checks nonce (replay protection)
+- Appends original sender to calldata
+end note
+
+note bottom of Recipient
+- Inherit ERC2771Context
+- Use _msgSender() / _msgData()
+end note
+@enduml

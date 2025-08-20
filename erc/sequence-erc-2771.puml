@@ -1,0 +1,34 @@
+@startuml
+title ERC-2771 Gasless Flow (Sequence)
+
+skinparam shadowing false
+skinparam monochrome true
+
+actor User as U
+participant "DApp Frontend\n(Web/App)" as FE
+participant "Wallet / Signer\n(EIP-712)" as W
+participant "Relayer API\n(gas sponsor)" as R
+participant "Trusted Forwarder\n(MinimalForwarder)" as F
+participant "Recipient Contract\n(ERC2771Context)" as RC
+
+U -> FE : Initiate action (e.g., Mint)
+FE -> W : Prepare EIP-712 typed data\nForwardRequest{from,to,value,gas,nonce,data}
+W --> FE : Signature (sig)
+
+FE -> R : POST /relay {request, sig}
+R -> F : execute(request, sig)\n(pays gas)
+
+F -> F : verify(request, sig)\n- domain separator\n- chainId\n- nonce check\n- ecrecover
+
+F -> RC : low-level call(to, data||sender)\nmsg.sender = F
+RC -> RC : business logic with _msgSender()\n(= original user)
+RC --> F : return data / success
+
+F --> R : receipt / status
+R --> FE : tx hash / status
+FE --> U : Success UI (no ETH needed)
+
+== Error paths ==
+F --> R : revert (invalid sig / bad nonce / out of gas)
+R --> FE : error response
+@enduml

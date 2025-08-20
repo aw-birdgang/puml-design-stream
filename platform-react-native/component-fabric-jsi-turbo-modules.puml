@@ -1,0 +1,50 @@
+@startuml
+title React Native New Architecture (Fabric/JSI) (View -> UIView / android.view.View)
+
+skinparam componentStyle rectangle
+skinparam shadowing false
+skinparam monochrome true
+
+package "JavaScript Realm" {
+  [React Components (JSX)] as JSX2
+  [Reconciler (JS)] as Reconciler2
+  [JSI (C++ API)] as JSI
+}
+
+package "Renderer" {
+  [Fabric Renderer] as Fabric
+  [Shadow Tree] as ShadowTree2
+  [Yoga (Layout)] as Yoga2
+}
+
+package "Native Realm" {
+  [UIManager (Fabric)] as UIManager2
+  [TurboModules (C++/ObjC/Java)] as TurboModules
+  [CodeGen Specs] as Codegen
+
+  package "iOS" {
+    [UIViewManager (Fabric)] as F_iOS_VM
+    [UIView (UIKit)] as F_UIView
+  }
+
+  package "Android" {
+    [ViewManager (Fabric)] as F_And_VM
+    [android.view.View] as F_AView
+  }
+}
+
+JSX2 -down-> Reconciler2 : render()
+Reconciler2 -down-> Fabric : commit work via JSI
+JSI -down-> Fabric : direct C++ calls (no JSON bridge)
+Fabric -down-> ShadowTree2 : create/update nodes
+ShadowTree2 -down-> Yoga2 : layout calculation
+Yoga2 -up-> Fabric : layout results
+Fabric -down-> UIManager2 : mount/schedule mutations
+UIManager2 -right-> F_iOS_VM : create/update
+UIManager2 -right-> F_And_VM : create/update
+F_iOS_VM -down-> F_UIView
+F_And_VM -down-> F_AView
+
+JSI -right-> TurboModules : native functions (synchronous/async)
+Codegen -down-> TurboModules : typed interface bindings
+@enduml

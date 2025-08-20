@@ -1,0 +1,48 @@
+@startuml
+title React Native Legacy Bridge Architecture (View -> UIView / android.view.View)
+
+skinparam componentStyle rectangle
+skinparam shadowing false
+skinparam monochrome true
+
+package "JavaScript Realm" {
+  [React Components (JSX)] as JSX
+  [Reconciler (JS)] as Reconciler
+  [Virtual DOM / Element Tree] as VDOM
+}
+
+package "Bridge Layer" {
+  [JSON Bridge] as Bridge
+  [NativeModules Proxy] as NMProxy
+}
+
+package "Native Realm" {
+  [UIManager] as UIManager
+  [Yoga (Layout)] as Yoga
+  [Shadow Tree] as ShadowTree
+
+  package "iOS" {
+    [RCTViewManager] as RCTVM
+    [UIView (UIKit)] as UIView
+  }
+
+  package "Android" {
+    [ViewManager] as AVM
+    [android.view.View] as AView
+  }
+}
+
+JSX -down-> Reconciler : setState/render()
+Reconciler -down-> VDOM : diff()
+VDOM -down-> Bridge : ops batched\n(serialize to JSON)
+Bridge -down-> UIManager : dispatchViewUpdates()
+UIManager -down-> ShadowTree : create/update shadow nodes
+ShadowTree -down-> Yoga : compute layout
+Yoga -up-> UIManager : layout results
+UIManager -right-> RCTVM : iOS create/update view
+UIManager -right-> AVM : Android create/update view
+RCTVM -down-> UIView
+AVM -down-> AView
+
+NMProxy -[hidden]-> Bridge
+@enduml
