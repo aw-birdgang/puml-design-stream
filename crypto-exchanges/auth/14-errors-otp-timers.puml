@@ -1,0 +1,19 @@
+@startuml Sequence - OTP Timers & Errors
+skinparam monochrome true
+actor User
+participant FE
+participant MTA
+
+
+User -> FE : Request OTP
+FE -> MTA : Send OTP
+MTA --> User : code (ttl=3m)
+User -> FE : Submit code
+alt Invalid code
+FE --> User : "인증번호가 올바르지 않습니다"
+else Expired
+FE --> User : Resend option, timer reset
+else Success
+FE --> User : Next step enabled
+end
+@enduml

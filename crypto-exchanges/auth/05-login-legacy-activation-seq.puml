@@ -1,0 +1,34 @@
+@startuml Sequence - Login & Legacy Activation
+!theme plain
+skinparam monochrome true
+
+actor User
+participant FE as "Web"
+participant Auth
+participant MTA as "Email/SMS"
+participant CI as "PhoneID"
+participant Admin as "Compliance"
+
+== Standard Login ==
+User -> FE : Enter email + password
+FE -> Auth : Authenticate
+Auth --> FE : Session/JWT
+FE --> User : Logged in
+
+== Legacy user activation (no CI) ==
+User -> FE : Open activation page
+FE -> MTA : Send email OTP
+MTA --> User : OTP code
+User -> FE : Submit OTP
+FE -> CI : Request phone verification
+CI --> FE : Success/Fail
+alt Asset >= Threshold
+  FE -> Admin : Route to manual verification (docs upload)
+  Admin --> FE : Approve/Reject
+end
+FE --> User : Activation complete
+note right of User
+  User is asked to re-login
+end note
+
+@enduml

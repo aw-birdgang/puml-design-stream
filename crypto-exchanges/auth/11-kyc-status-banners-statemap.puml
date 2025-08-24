@@ -1,0 +1,16 @@
+@startuml State - KYC Banners (UI)
+skinparam monochrome true
+[*] --> 미실시
+미실시 : 거래 불가 | 입출금 불가\nCTA: 고객확인 이행하기
+기간도래 : 거래 가능 | 입출금 가능\nBanner: 마감일 D-day 표시
+반려 : 거래 불가 | 입출금 불가\nBanner: 반려 사유 + 재제출
+심사대기 : 거래 가능 | 입출금 가능\nBanner: 심사 대기 안내
+완료 : 거래 가능 | 입출금 가능\nBadge: KYC 완료
+
+
+미실시 --> 기간도래 : Window open
+기간도래 --> 심사대기 : 제출
+심사대기 --> 완료 : 승인
+심사대기 --> 반려 : 반려
+기간도래 --> 미실시 : Window reset (시간 경과)
+@enduml

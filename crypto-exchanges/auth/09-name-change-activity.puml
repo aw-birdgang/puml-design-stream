@@ -1,0 +1,16 @@
+@startuml Activity - Name Change
+skinparam monochrome true
+start
+:Input new legal name;
+:Upload 주민등록초본 (mask RRNs);
+:Collect consent;
+:Submit -> Compliance review;
+if (Approved?) then (Yes)
+:Apply new name;
+:Cancel open orders;
+:Temporarily block services until KYC refreshed;
+else (No)
+:Reject with reason;
+endif
+stop
+@enduml

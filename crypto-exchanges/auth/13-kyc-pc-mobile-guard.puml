@@ -1,0 +1,12 @@
+@startuml Activity - PC vs Mobile Guard
+skinparam monochrome true
+start
+if (Device == PC) then (Yes)
+:Show notice: 신분증 촬영/계좌확인은 PC 불가;
+:Deep-link to App/Mobile Web;
+stop
+else (Mobile)
+:Proceed with STEP3/STEP4 flows;
+stop
+endif
+@enduml

@@ -1,0 +1,16 @@
+@startuml Activity - Account Deletion
+skinparam monochrome true
+start
+:Show balances (KRW + crypto);
+:Warn on rejoin restrictions (24h, 1yr rule);
+if (Balance > 10,000 KRW or pending?) then (Yes)
+  :Guide to withdraw assets;
+  :Block deletion;
+else (No)
+  :Offer small-asset waiver (<=10,000 KRW);
+  :Confirm waivers & legal notices;
+  :Cancel open orders;
+  :Delete account & personal data (retain per law);
+endif
+stop
+@enduml

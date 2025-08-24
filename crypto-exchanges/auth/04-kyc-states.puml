@@ -1,0 +1,16 @@
+@startuml State - KYC Status
+skinparam monochrome true
+[*] --> 미실시
+미실시 --> 기간도래_거래가능 : Reverify window opens
+기간도래_거래가능 --> 강제재이행_거래불가 : Deadline passed
+미실시 --> 강제재이행_거래불가 : Risk trigger / policy change
+미실시 --> 심사대기_거래가능 : Submitted
+기간도래_거래가능 --> 심사대기_거래가능 : Submitted
+강제재이행_거래불가 --> 심사대기_거래불가 : Submitted (restricted)
+심사대기_거래가능 --> 반려_거래불가 : Rejected
+심사대기_거래가능 --> 완료_거래가능 : Approved
+심사대기_거래불가 --> 완료_거래가능 : Approved
+반려_거래불가 --> 기간도래_거래가능 : New submission within window
+
+
+@enduml

@@ -1,0 +1,25 @@
+@startuml Sequence - Email Find & Password Reset
+skinparam monochrome true
+actor User
+participant FE
+participant Auth
+participant CI as PhoneID
+participant MTA as Email
+
+
+User -> FE : Start "이메일 찾기"
+FE -> CI : Phone owner verification
+CI --> FE : Verified
+FE -> Auth : Lookup accounts by phone/identity
+Auth --> FE : {emails: [a@x, b@x]}
+User -> FE : Select account
+FE -> MTA : Send email OTP
+MTA --> User : OTP
+User -> FE : Verify OTP
+FE -> Auth : Issue reset token
+Auth --> FE : Reset token
+User -> FE : Set new password
+FE -> Auth : Update password
+Auth --> FE : Success
+FE --> User : Re-login
+@enduml

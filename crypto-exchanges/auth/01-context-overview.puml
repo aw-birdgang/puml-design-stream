@@ -1,0 +1,43 @@
+@startuml Context - Login & KYC
+!theme plain
+skinparam shadowing false
+skinparam monochrome true
+skinparam roundcorner 12
+
+
+actor User
+actor Admin as Compliance
+
+
+rectangle "Exchange Platform" as EX {
+component "Auth Service\n(Login/OTP/Session)" as Auth
+component "KYC Service\n(Flow/Review/Status)" as KYC
+component "Account Service\n(Profile/Name change/Withdraw)" as ACC
+component "Security Center\n(GeoBlock, Login History, Remote Logout)" as SEC
+component "Account Merge\n(Asset move/Close subs)" as Merge
+}
+
+
+rectangle "External Providers" as EXT {
+component "SMS/Email Gateway" as MTA
+component "CI/Phone ID Provider" as CI
+component "OCR/ID Verify" as OCR
+component "Bank Account Verify" as BANK
+component "VerifyVASP / Travel Rule" as VASP
+}
+
+
+User --> Auth : Login / Password reset
+Auth --> CI : Phone ownership check (CI)
+Auth --> MTA : Email OTP / notifications
+User --> KYC : Start/Resume KYC, Re-verification
+KYC --> OCR : ID OCR & liveness
+KYC --> BANK : 1KRW micro-deposit / acct verify
+KYC --> VASP : Sender/Receiver info (Travel Rule)
+User --> ACC : Profile edit / Name change / Withdraw / Account deletion
+User --> SEC : OTP for withdrawal, foreign login block, login logs
+User --> Merge : Select main account, consolidate
+Compliance --> KYC : Manual review / approval
+
+
+@enduml

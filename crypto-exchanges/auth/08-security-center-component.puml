@@ -1,0 +1,21 @@
+@startuml Components - Security Center
+skinparam monochrome true
+
+
+package "Security Center" {
+[Foreign Login Block]
+[Login History]
+[Remote Logout]
+[Withdrawal OTP]
+[KYC Status Banner]
+}
+
+
+[Foreign Login Block] -down-> (Policy: Block non-KR IP)
+[Login History] -down-> (Sessions list + IP + device)
+[Remote Logout] -down-> (Invalidate session tokens)
+[Withdrawal OTP] -down-> (TOTP/Email/SMS 2nd factor)
+[KYC Status Banner] -down-> (CTA: KYC 이행하기)
+
+
+@enduml

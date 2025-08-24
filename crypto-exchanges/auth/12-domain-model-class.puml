@@ -1,0 +1,78 @@
+@startuml Class - Domain Model
+skinparam monochrome true
+
+class User {
+  id: UUID
+  email: String
+  phone: String
+  status: String
+}
+
+class Account {
+  id: UUID
+  userId: UUID
+  balances: Map
+}
+
+class KYCProfile {
+  id: UUID
+  userId: UUID
+  status: String
+  deadline: Date
+  level: Int
+}
+
+class KYCSubmission {
+  id: UUID
+  userId: UUID
+  createdAt: DateTime
+  result: String
+  reason: String
+}
+
+class NameChangeRequest {
+  id: UUID
+  userId: UUID
+  docUrl: String
+  status: String
+}
+
+class EmailVerification {
+  id: UUID
+  userId: UUID
+  email: String
+  status: String
+}
+
+class PhoneVerification {
+  id: UUID
+  userId: UUID
+  ciToken: String
+  status: String
+}
+
+class AccountMergeRequest {
+  id: UUID
+  userId: UUID
+  mainEmail: String
+  status: String
+}
+
+class Session {
+  id: UUID
+  userId: UUID
+  device: String
+  ip: String
+}
+
+' 관계 정의
+User "1" -- "*" Account
+User "1" -- "1" KYCProfile
+User "1" -- "*" KYCSubmission
+User "1" -- "*" Session
+User "1" -- "*" EmailVerification
+User "1" -- "*" PhoneVerification
+User "1" -- "*" AccountMergeRequest
+User "1" -- "*" NameChangeRequest
+
+@enduml

@@ -1,0 +1,19 @@
+@startuml Activity - Account Merge
+skinparam monochrome true
+start
+:List user accounts & balances;
+:Select main account;
+:Email OTP to main account;
+if (OTP verified?) then (Yes)
+  :Show asset valuation & warnings;
+  :Confirm merge consent;
+  :Cancel open orders on sub accounts;
+  :Transfer assets to main;
+  :Deactivate sub accounts;
+  :Force logout;
+  stop
+else (No)
+  :Abort merge;
+  stop
+endif
+@enduml

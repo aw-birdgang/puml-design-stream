@@ -1,0 +1,41 @@
+@startuml UseCases - Login & KYC
+left to right direction
+skinparam monochrome true
+
+
+actor User
+actor Compliance
+
+
+rectangle Platform {
+usecase "Email Login" as UC1
+usecase "Legacy user activation (no CI)" as UC2
+usecase "Find email & Reset password" as UC3
+usecase "Start/Resume KYC" as UC4
+usecase "KYC Re-verification (재이행)" as UC5
+usecase "KYC Review & Decision" as UC6
+usecase "Security Center (OTP/GeoBlock/Logs)" as UC7
+usecase "Account Merge (1인1계정)" as UC8
+usecase "Name Change Request" as UC9
+usecase "Account Deletion with asset threshold" as UC10
+}
+
+
+User --> UC1
+User --> UC2
+User --> UC3
+User --> UC4
+User --> UC5
+Compliance --> UC6
+User --> UC7
+User --> UC8
+User --> UC9
+User --> UC10
+
+
+UC4 .> UC6 : «review»
+UC5 .> UC6 : «review»
+UC10 .> UC8 : «check duplicates?»
+
+
+@enduml

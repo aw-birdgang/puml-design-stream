@@ -1,0 +1,20 @@
+@startuml Activity - KYC Flow
+!theme plain
+skinparam monochrome true
+start
+:Show KYC intro & legal notices;
+if (Resume within deadline?) then (Yes)
+:Load saved progress;
+else (No)
+:Start new KYC session;
+endif
+:STEP1 본인확인 (CI/휴대폰 인증);
+:STEP2 고객확인 정보 입력;
+:STEP3 신분증 인증 (OCR, liveness);
+:STEP4 계좌 인증 (1KRW micro-deposit or bank API);
+:Collect required consents (필수/선택);
+:Submit;
+:Show pending message;
+:Route to review;
+stop
+@enduml
